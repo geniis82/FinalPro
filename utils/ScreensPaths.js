@@ -9,13 +9,13 @@ export const ScreensPaths = [
     {
         title: 'My Forms',
         component: Partes,
-        name: 'My_Forms',
+        name: 'Mis Partes',
         showOnBar: true
     },
     {
         title: 'Form',
         component: Form,
-        name: 'Form',
+        name: 'Parte',
         showOnBar: true
     },
     {

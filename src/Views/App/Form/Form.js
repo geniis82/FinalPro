@@ -1,111 +1,128 @@
-import React, { useCallback, useState } from 'react'
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
-import { ScrollView, TextInput } from 'react-native-gesture-handler';
-import OpenCamera from '../../../../utils/OpenCamera';
-import DatePicker from 'react-native-date-picker'
-import axios from "axios"
-
-import SignatureScreen from '../../../../utils/SignaturePad';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import DropDownPicker from 'react-native-dropdown-picker';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import TextCustom from '../../../Components/TextCustom';
+import React, { useState, useEffect, useCallback } from 'react'
+import { Text, View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { ScrollView } from 'react-native';
 import UserForm from './Components/UserForm';
-import Loader from '../../../Components/Loader';
 import VehicleForm from './Components/VehicleForm';
-
-
+import CabeceraForm from './Components/CabeceraForm';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StorageKeys } from '../../../../utils/StorageKeys';
+import axios from 'axios';
+import { ENDPOINT_partes } from '../../../../utils/endpoints';
+import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect } from "@react-navigation/native";
+import moment from 'moment';
 
 const Form = () => {
 
+    const dni = AsyncStorage.getItem(StorageKeys.USER_DNI)
+    const token = AsyncStorage.getItem(StorageKeys.USER_TOKEN)
+    const idUser = AsyncStorage.getItem(StorageKeys.USER_ID)
+
     const [loaded, setLoaded] = useState(false);
+    const navigation = useNavigation()
+    const [parte, setParte] = useState({
+        dataParte: "",
+        location: "",
+        addres: "",
+        descripcion: "",
+        client1: "",
+        vehiculo: "",
+        client2: "",
+        vehiculo2: "",
+    })
 
-    
+    // useFocusEffect(
+    //     useCallback( () => {
+    //         setParte({
+    //             dataParte: moment().format('YYYY-MM-DD'),
+    //             location: "",
+    //             addres: "",
+    //             descripcion: "",
+    //             client1: idUser,
+    //             vehiculo: "",
+    //             client2: "",
+    //             vehiculo2: "",
+    //         })
+    //     }, []));
+
+    // useEffect(async () => {
+    //     return () => {
+    //         setParte({
+    //             client1: idUser,
+    //         })
+    //     }
+    // }, [])
+
+
+    const save = async () => {
+
+        axios.post(`${ENDPOINT_partes}/save.php`, {
+            ...parte
+        })
+            .then(res => {
+                const parteData = res.data
+                console.log(parteData);
+                if (parteData.status) {
+                    Alert.alert('Parte Eniado', 'El parte se ha enviado correctamente', [
+                        {
+                            text: 'Aceptar',
+                            onPress: () => navigation.navigate("Mis Partes"),
+                            style: 'cancel',
+                        },
+                    ]);
+                } else {
+                    Alert.alert('Error', 'Introduzca todos los campos', [
+                        {
+                            text: 'Cancelar',
+                            style: 'cancel',
+                        },
+                    ]);
+                }
+            })
+            .catch(error => {
+                console.error("error al crear parte", error);
+            }).finally(() => setLoaded(true))
+    }
+
+
+    const handleOnChange = (e) => {
+        const { id, value } = e.target;
+        setParte({ ...parte, [id]: value })
+    }
+
     return (
-
-        <ScrollView style={{padding:'4%'}}>
-            <UserForm setLoaded={setLoaded} loaded={loaded} />
-            <VehicleForm setLoaded={setLoaded} loaded={loaded} />
-            {/* seleccion del vehiculo */}
-            {/* inormacion del Vehiculo del cliente (se recoge de la api)*/}
-            {/* <View style={{ flex: 1, paddingVertical: 80, paddingHorizontal: 40, justifyContent: 'space-between' }}>
-                <DropDownPicker
-                    open={openDD}
-                    listMode='SCROLLVIEW'
-                    value={value}
-                    items={vehiclesUser}
-                    setOpen={setOpenDD}
-                    setValue={setValue}
-                    setItems={setVehiclesUser}
-
-                />
-            </View>
-            <Text>Marca: </Text>
-            <TextInput style={styles.input}></TextInput>
-            <Text>Matricula: </Text>
-            <TextInput style={styles.input}></TextInput>
-
-            {/* informacion de la aseguradora (se recoge de la api)
-            <Text>Nombre: </Text>
-            <TextInput style={styles.input}></TextInput>
-            <Text>Numero de Poliza: </Text>
-            <TextInput style={styles.input}></TextInput>
-
-
-            <Text>Decripcion: </Text>
-            <TextInput multiline={true} numberOfLines={5} style={styles.area} editable></TextInput>
-
-
-
-            <View>
-                <Text>Date</Text>
-                <TouchableOpacity onPress={() => setOpen(true)} style={styles.input}>
-                    <Text>{date.toLocaleDateString()}</Text>
+        <ScrollView style={{ padding: '4%' }}>
+            <Text style={{ fontSize: 40 }}>Parte</Text>
+            <CabeceraForm setLoaded={setLoaded} loaded={loaded} setParte={setParte} parte={parte} handleOnChange={handleOnChange} />
+            <UserForm setLoaded={setLoaded} loaded={loaded} setParte={setParte} parte={parte} handleOnChange={handleOnChange} />
+            <VehicleForm setLoaded={setLoaded} loaded={loaded} setParte={setParte} parte={parte} handleOnChange={handleOnChange} />
+            <View style={styles.container}>
+                <TouchableOpacity style={styles.button} onPress={save}>
+                    <Text style={{ textAlign: 'center', color: 'white' }}>Enviar Parte</Text>
                 </TouchableOpacity>
-                <DatePicker
-                    modal
-                    open={open}
-                    date={date}
-                    mode='date'
-                    onConfirm={(date) => {
-                        setOpen(false)
-                        setDate(date)
-                    }}
-                    onCancel={() => {
-                        setOpen(false)
-                    }}
-                />
             </View>
-            <OpenCamera /> */}
-
-            {/* <SignatureScreen></SignatureScreen> */}
         </ScrollView>
-
     );
-
-
 }
 
-// const styles = StyleSheet.create({
-//     container: {
-//         width: '100%',
-//         borderRadius: 5,
-//         paddingHorizontal: 10,
-//         paddingVertical: 5,
-//         marginBottom: 10,
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//         flex: 1,
-//     },
-//     area: {
-//         borderColor: 'black',
-//         borderWidth: 1,
-//         marginTop: '5%',
-//         marginBottom: '5%',
-//         marginLeft: '5%',
-//         width: '80%',
-//     }
-// });
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    button: {
+        borderColor: 'black',
+        borderWidth: 1,
+        borderRadius: 5,
+        padding: '4%',
+        width: 120,
+        backgroundColor: 'green'
+    }
+});
+
+
 
 export default Form;

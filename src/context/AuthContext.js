@@ -1,8 +1,8 @@
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useEffect, useState } from 'react'
+import { ENDPOINT_auth } from "../../utils/endpoints";
 
-const ENDPOINT = 'http://testlg.vidavia.net/projecteFinal/api/app/auth'
 
 
 export const AuthContext = createContext();
@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }) => {
     const login = (email, password) => {
         setIsLoading(true);
         axios
-            .post(`${ENDPOINT}/login.php`, {
+            .post(`${ENDPOINT_auth}/login.php`, {
                 email,
                 password,
             })

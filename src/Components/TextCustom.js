@@ -4,11 +4,17 @@ import { Text } from 'react-native-elements';
 
 
 
-const TextCustom = ({ label, value, onChange, id ,readOnly}) => {
+const TextCustom = ({ label, value, onChange, id, readOnly }) => {
+
+
+    const handleOnChange = (value) => {
+        onChange && onChange({ target: { id, value } })
+    }
+
     return (
         <View>
             <Text>{label}</Text>
-            <TextInput style={styles.input} id={id} onChange={onChange} readOnly={readOnly} >{value}</TextInput>
+            <TextInput style={styles.input} id={id} onChangeText={handleOnChange} readOnly={readOnly} >{value}</TextInput>
         </View>
     )
 }

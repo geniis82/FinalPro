@@ -14,10 +14,10 @@ import Icon from "react-native-ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Partes from './src/Views/App/Partes/Partes';
 import Form from './src/Views/App/Form/Form';
+import { ENDPOINT_auth } from './utils/endpoints';
 
 const Stack = createStackNavigator();
 const Draw = createDrawerNavigator();
-const ENDPOINT = 'http://testlg.vidavia.net/projecteFinal/api/app/auth'
 
 
 const MyDraws = () => {
@@ -25,15 +25,15 @@ const MyDraws = () => {
     const handleLogout = async () => {
         const dni = await AsyncStorage.getItem('dni');
         axios
-            .post(`${ENDPOINT}/logout.php`, {
+            .post(`${ENDPOINT_auth}/logout.php`, {
                 dni
             })
             .then(async res => {
                 let resp = res.data
-                console.log(resp);
+                // console.log(resp);
                 if (resp.status) {
                     // console.log(res.data);
-                    await AsyncStorage.multiRemove(['userToken', 'dni']);
+                    await AsyncStorage.multiRemove(['userToken', 'dni', 'idUser']);
                     navigation.navigate("Auth")
                 }
             })
@@ -48,7 +48,7 @@ const MyDraws = () => {
                 <ImageBackground style={{ padding: 50 }} source={{ uri: "https://picsum.photos/200/300" }} />
                 <View style={{ flex: 1, backgroundColor: '#fff', paddingTop: 10 }}>
                     <DrawerItemList {...item} />
-                    <DrawerItem label='Log Out' onPress={handleLogout} style={{ marginTop: '225%' }}/>
+                    <DrawerItem label='Log Out' onPress={handleLogout} style={{ marginTop: '225%' }} />
                 </View>
             </DrawerContentScrollView>
         )} screenOptions={{

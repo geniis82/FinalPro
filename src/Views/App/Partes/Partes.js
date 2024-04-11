@@ -6,7 +6,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { StorageKeys } from "../../../../utils/StorageKeys";
 import { Paths } from "../../../../utils/paths";
 import { StackView, createStackNavigator } from "@react-navigation/stack";
-import { ENDPOINT_partes } from "../../../../utils/endpoints";
+import { ENDPOINT_partes, ENDPOINT_user } from "../../../../utils/endpoints";
 
 
 
@@ -14,6 +14,7 @@ const Partes = () => {
 
     const [partes, setPartes] = useState([]);
     const [loaded, setLoaded] = useState(false);
+    // const[user,setUser]=useState([])
 
     const [selectedId, setSelectedId] = useState();
     const { navigate } = useNavigation();
@@ -30,15 +31,20 @@ const Partes = () => {
     const fetchPartes = async () => {
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI);
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN);
+        const idUser = await AsyncStorage.getItem(StorageKeys.USER_ID)
+
+        // console.log(idUser);
 
         axios.get(`${ENDPOINT_partes}/getAll.php`, {
             params: {
                 dni,
-                token
+                token,
+                idUser
             }
         })
             .then(res => {
-                let partesUser = res.data;
+                const partesUser = res.data;
+                // console.log(partesUser);
                 if (partesUser.status) {
                     setPartes(partesUser.partes);
                 } else {

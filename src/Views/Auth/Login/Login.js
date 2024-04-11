@@ -6,14 +6,13 @@ import { Button } from 'react-native-elements';
 import { getItemFromAsyncStorage, setItemOnAsyncStorage } from '../../../../utils/GeneralFunctions';
 import { StorageKeys } from '../../../../utils/StorageKeys';
 import Loader from '../../../Components/Loader';
+import { ENDPOINT_auth, ENDPOINT_user } from '../../../../utils/endpoints';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
 const Login = ({ navigation }) => {
     const { reset } = useNavigation();
-    const ENDPOINT = 'http://testlg.vidavia.net/projecteFinal/api/app/auth'
-
-
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [loaded, setLoaded] = useState(false);
@@ -22,12 +21,12 @@ const Login = ({ navigation }) => {
         handleCheckToken();
     }, [])
 
-    const handleCheckToken = async () =>{
+    const handleCheckToken = async () => {
         const token = await getItemFromAsyncStorage(StorageKeys.USER_TOKEN)
         const dni = await getItemFromAsyncStorage(StorageKeys.USER_DNI)
         console.log(token);
         if (token !== null) {
-            axios.post(`${ENDPOINT}/checkToken.php`, {
+            axios.post(`${ENDPOINT_auth}/checkToken.php`, {
                 token
             })
                 .then(res => {
@@ -42,17 +41,20 @@ const Login = ({ navigation }) => {
 
     }
 
-    const handleLogin = () => {
-        axios.post(`${ENDPOINT}/login.php`, {
+    const handleLogin = async () => {
+
+
+        axios.post(`${ENDPOINT_auth}/login.php`, {
             email: username,
             password,
         })
             .then(async res => {
                 let userInfo = res.data;
                 if (userInfo.status) {
-                    console.log(userInfo.token);
+                    console.log(userInfo);
                     await setItemOnAsyncStorage(StorageKeys.USER_TOKEN, userInfo.token)
                     await setItemOnAsyncStorage(StorageKeys.USER_DNI, username)
+                    await setItemOnAsyncStorage(StorageKeys.USER_ID, userInfo.id)
                     reset({ index: 0, routes: [{ name: 'App' }] });
                 } else {
                     Alert.alert('Error', JSON.stringify(userInfo.message))

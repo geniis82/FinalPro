@@ -11,6 +11,7 @@ import Loader from '../../../Components/Loader';
 import { ENDPOINT_partes } from '../../../../utils/endpoints';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StorageKeys } from '../../../../utils/StorageKeys';
+import TextCustom from '../../../Components/TextCustom';
 
 const InfoPartes = () => {
 
@@ -34,7 +35,7 @@ const InfoPartes = () => {
         })
             .then(res => {
                 const infoParte = res.data
-                // console.log(infoParte);
+                console.log(infoParte);
                 if (infoParte.status) {
                     setParte(infoParte.parte)
                 } else {
@@ -57,6 +58,7 @@ const InfoPartes = () => {
             <CabeceraInfoPartes parte={parte} handleOnChange={handleOnChange} />
             <ParteVehiculo1 parte={parte} handleOnChange={handleOnChange} />
             <ParteVehiculo2 parte={parte} handleOnChange={handleOnChange} />
+            <TextCustom label={'Descripcion'} value={parte.descripcion} readOnly={true}/>
         </ScrollView>
     )
 }
