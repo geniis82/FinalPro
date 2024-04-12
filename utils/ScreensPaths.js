@@ -1,3 +1,4 @@
+import UserForm from "../src/Views/App/Form/Components/UserForm";
 import Form from "../src/Views/App/Form/Form";
 import InfoPartes from "../src/Views/App/Partes/InfoPartes";
 import Partes from "../src/Views/App/Partes/Partes";

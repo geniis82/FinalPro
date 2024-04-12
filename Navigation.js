@@ -33,7 +33,7 @@ const MyDraws = () => {
                 // console.log(resp);
                 if (resp.status) {
                     // console.log(res.data);
-                    await AsyncStorage.multiRemove(['userToken', 'dni', 'idUser']);
+                    await AsyncStorage.multiRemove(['userToken', 'dni', 'idUser','parte']);
                     navigation.navigate("Auth")
                 }
             })
@@ -57,8 +57,7 @@ const MyDraws = () => {
             }
         }}>
             {ScreensPaths.map((item, index) => (
-                <Stack.Screen
-                    name={item.name}
+                <Stack.Screen initialParams={{initialRoute:"Cabecera"}} name={item.name}
                     component={item.component}
                     options={{ drawerIcon: () => { item.icon } }}
                     key={index}

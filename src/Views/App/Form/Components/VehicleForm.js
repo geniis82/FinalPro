@@ -9,12 +9,15 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { StorageKeys } from '../../../../../utils/StorageKeys';
 
 
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import User2Form from './User2Form';
 import Vehicle2Form from './Vehicle2Form';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { setParteOnAsyncStorage } from '../../../../../utils/GeneralFunctions';
 
-const VehicleForm = ({ setLoaded, loaded, setParte, parte, handleOnChange }) => {
+const VehicleForm = () => {
 
+    const navigation = useNavigation()
 
     const [vehicles, setVehicles] = useState([]);
     const [poliza, setPoliza] = useState()
@@ -22,6 +25,9 @@ const VehicleForm = ({ setLoaded, loaded, setParte, parte, handleOnChange }) => 
     const [value, setValue] = useState(null);
     const [vehicleSec, setVehicleSec] = useState();
 
+    const [parte, setParte] = useState({})
+
+    const [loaded, setLoaded] = useState(false);
     // useEffect(() => {
     //     fetchVehicle()
     // }, [])
@@ -38,6 +44,8 @@ const VehicleForm = ({ setLoaded, loaded, setParte, parte, handleOnChange }) => 
     const fetchVehicle = async () => {
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
+        const p = await AsyncStorage.getItem(StorageKeys.PARTE);
+        setParte(p)
         axios.get(`${ENDPOINT_vehicles}/getVehiclesByUser.php`, {
             params: {
                 dni,
@@ -98,17 +106,23 @@ const VehicleForm = ({ setLoaded, loaded, setParte, parte, handleOnChange }) => 
     const handleDropDown = () => {
         const itemSelect = vehicles.find(item => item.value === value)
         setVehicleSec(itemSelect)
+        // setParte({ ...parte, ["vehiculo"] : value})
         fetchAseguradora()
-        parte.vehiculo = value
-        // setParte(parte)
-        console.log(parte);
+        // console.log(parte);
     }
 
+    const handleSiguiente = async () => {
+        
+        await setParteOnAsyncStorage(StorageKeys.PARTE, JSON.stringify(parte));
+        console.log(await AsyncStorage.getItem(StorageKeys.PARTE));
+        navigation.navigate('User2Form');
+    };
+
     return (
-        <View style={{ paddingBottom: '10%' }}>
+        <ScrollView style={{ paddingBottom: '10%' }}>
             <Text style={{ fontSize: 40 }}>Vehiculo A</Text>
             <DropDownPicker
-                listMode='SCROLLVIEW'
+                listMode='MODAL'
                 open={open}
                 value={value}
                 items={vehicles}
@@ -117,22 +131,26 @@ const VehicleForm = ({ setLoaded, loaded, setParte, parte, handleOnChange }) => 
                 setItems={setVehicles}
                 onChangeValue={handleDropDown}
             />
-
-            {vehicleSec &&
-                <View style={{ paddingTop: '4%' }}>
-                    <TextCustom label={'Matricula'} id={'matricula'} value={vehicleSec.label} onChange={handleOnChange} />
-                    <TextCustom label={'Marca'} id={'marca'} value={vehicleSec.options.marca} onChange={handleOnChange} />
-                    <TextCustom label={'Modelo'} id={'modelo'} value={vehicleSec.options.modelo} onChange={handleOnChange} />
-                </View>
-            }
-            {poliza &&
-                <View>
-                    <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} value={poliza.aseguradora_id[1]} onChange={handleOnChange} />
-                    <TextCustom label={'Numero de poliza'} id={'name'} value={poliza.name} onChange={handleOnChange} />
-                    <User2Form setLoaded={setLoaded} loaded={loaded} parte={parte} setParte={setParte} handleOnChange={handleOnChange} />
-                </View>
-            }
-        </View>
+        
+                {vehicleSec &&
+                    <View style={{ paddingTop: '4%' }}>
+                        <TextCustom label={'Matricula'} id={'matricula'} value={vehicleSec.label} />
+                        <TextCustom label={'Marca'} id={'marca'} value={vehicleSec.options.marca} />
+                        <TextCustom label={'Modelo'} id={'modelo'} value={vehicleSec.options.modelo} />
+                    </View>
+                }
+                {poliza &&
+                    <View>
+                        <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} value={poliza.aseguradora_id[1]} />
+                        <TextCustom label={'Numero de poliza'} id={'name'} value={poliza.name} />
+                        {/* <User2Form setLoaded={setLoaded} loaded={loaded} parte={parte} setParte={setParte} handleOnChange={handleOnChange} /> */}
+                        <TouchableOpacity onPress={handleSiguiente}>
+                            <Text>Siguiente</Text>
+                        </TouchableOpacity>
+                    </View>
+                }
+            
+        </ScrollView>
     )
 
 

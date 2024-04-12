@@ -8,50 +8,49 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StorageKeys } from '../../../../utils/StorageKeys';
 import axios from 'axios';
 import { ENDPOINT_partes } from '../../../../utils/endpoints';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { useFocusEffect } from "@react-navigation/native";
 import moment from 'moment';
+import { createStackNavigator } from '@react-navigation/stack';
+import User2Form from './Components/User2Form';
+import Vehicle2Form from './Components/Vehicle2Form';
 
 const Form = () => {
+    const Stack = createStackNavigator();
 
     const dni = AsyncStorage.getItem(StorageKeys.USER_DNI)
     const token = AsyncStorage.getItem(StorageKeys.USER_TOKEN)
     const idUser = AsyncStorage.getItem(StorageKeys.USER_ID)
 
+
+
     const [loaded, setLoaded] = useState(false);
+    const [showFirstScreen, setShowFirstScreen] = useState(true);
     const navigation = useNavigation()
-    const [parte, setParte] = useState({
-        dataParte: "",
-        location: "",
-        addres: "",
-        descripcion: "",
-        client1: "",
-        vehiculo: "",
-        client2: "",
-        vehiculo2: "",
+    // const [parte, setParte] = useState({
+    //     dataParte: "",
+    //     location: "",
+    //     addres: "",
+    //     descripcion: "",
+    //     client1: "",
+    //     vehiculo: "",
+    //     client2: "",
+    //     vehiculo2: "",
+    // })
+
+    useFocusEffect(
+        useCallback(() => {
+            // cleanParte()
+            navigation.navigate("Cabecera");
+        }, [navigation.isFocused()]))
+
+    useEffect(() => {
+        // cleanParte()
     })
 
-    // useFocusEffect(
-    //     useCallback( () => {
-    //         setParte({
-    //             dataParte: moment().format('YYYY-MM-DD'),
-    //             location: "",
-    //             addres: "",
-    //             descripcion: "",
-    //             client1: idUser,
-    //             vehiculo: "",
-    //             client2: "",
-    //             vehiculo2: "",
-    //         })
-    //     }, []));
-
-    // useEffect(async () => {
-    //     return () => {
-    //         setParte({
-    //             client1: idUser,
-    //         })
-    //     }
-    // }, [])
+    const cleanParte = async () => {
+        await AsyncStorage.removeItem(StorageKeys.PARTE)
+    }
 
 
     const save = async () => {
@@ -85,23 +84,43 @@ const Form = () => {
     }
 
 
-    const handleOnChange = (e) => {
-        const { id, value } = e.target;
-        setParte({ ...parte, [id]: value })
-    }
+    // const handleOnChange = (e) => {
+    //     const { id, value } = e.target;
+    //     setParte({ ...parte, [id]: value })
+    // }
 
     return (
-        <ScrollView style={{ padding: '4%' }}>
-            <Text style={{ fontSize: 40 }}>Parte</Text>
-            <CabeceraForm setLoaded={setLoaded} loaded={loaded} setParte={setParte} parte={parte} handleOnChange={handleOnChange} />
-            <UserForm setLoaded={setLoaded} loaded={loaded} setParte={setParte} parte={parte} handleOnChange={handleOnChange} />
-            <VehicleForm setLoaded={setLoaded} loaded={loaded} setParte={setParte} parte={parte} handleOnChange={handleOnChange} />
-            <View style={styles.container}>
-                <TouchableOpacity style={styles.button} onPress={save}>
-                    <Text style={{ textAlign: 'center', color: 'white' }}>Enviar Parte</Text>
-                </TouchableOpacity>
-            </View>
-        </ScrollView>
+        <Stack.Navigator>
+            <Stack.Screen name='Cabecera' >
+                {() => <CabeceraForm />}
+            </Stack.Screen>
+            <Stack.Screen name='UserForm'  >
+                {() => <UserForm />}
+            </Stack.Screen>
+            <Stack.Screen name='VehicleForm' >
+                {() => <VehicleForm />}
+            </Stack.Screen>
+            <Stack.Screen name='User2Form' >
+                {() => <User2Form />}
+            </Stack.Screen>
+            <Stack.Screen name='Vehicle2Form' >
+                {() => <Vehicle2Form />}
+            </Stack.Screen>
+
+
+            {/* <ScrollView style={{ padding: '4%' }}>
+                    <Text style={{ fontSize: 40 }}>Parte</Text>
+                    <UserForm setLoaded={setLoaded} loaded={loaded} setParte={setParte} parte={parte} handleOnChange={handleOnChange} />
+                    <VehicleForm setLoaded={setLoaded} loaded={loaded} setParte={setParte} parte={parte} handleOnChange={handleOnChange} />
+                    <View style={styles.container}>
+                        <TouchableOpacity style={styles.button} onPress={save}>
+                            <Text style={{ textAlign: 'center', color: 'white' }}>Enviar Parte</Text>
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView> */}
+        </Stack.Navigator>
+
+
     );
 }
 

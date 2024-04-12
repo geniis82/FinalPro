@@ -11,15 +11,20 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { Text } from 'react-native-elements';
 import TextCustom from '../../../../Components/TextCustom';
 import Vehicle2Form from './Vehicle2Form';
+import CheckBox from '@react-native-community/checkbox';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 
 
-const User2Form = ({ setLoaded, loaded, setParte, parte ,handleOnChange}) => {
 
+const User2Form = () => {
 
+    const [loaded, setLoaded] = useState(false);
+    const [parte, setParte] = useState({})
     const [users, setUsers] = useState([])
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState(null);
     const [userSec, setUserSec] = useState();
+    const [toggleCheckBox, setToggleCheckBox] = useState(false);
 
 
     useFocusEffect(
@@ -63,44 +68,57 @@ const User2Form = ({ setLoaded, loaded, setParte, parte ,handleOnChange}) => {
     }
 
 
-
-
     if (!loaded) return <Loader />
 
 
     const handleDropDown = () => {
         const itemSelect = users.find(item => item.value === value)
         setUserSec(itemSelect)
-        parte.client2=value
+        parte.client2 = value
         // setParte(parte)
         console.log(parte);
     }
 
     return (
-        <View style={{ paddingBottom: '4%' }}>
+        <ScrollView style={{ paddingBottom: '4%' }}>
             <Text style={{ fontSize: 40 }}>Usuario B</Text>
-            <DropDownPicker
-                listMode='SCROLLVIEW'
-                open={open}
-                value={value}
-                items={users}
-                setOpen={setOpen}
-                setValue={setValue}
-                setItems={setUsers}
-                onChangeValue={handleDropDown}
-                
-            />
-            {userSec &&
-                <View style={{ paddingTop: '4%' }}>
-                    <TextCustom label={'Name'} id={'name'} value={userSec.options.name} onChange={handleOnChange} />
-                    <TextCustom label={'Surname'} id={'surname'} value={userSec.options.surname} onChange={handleOnChange} />
-                    <TextCustom label={'Phone'} id={'phone'} value={userSec.options.tlf} onChange={handleOnChange} />
-                    <TextCustom label={'Date Birth'} id={'dateBirth'} value={userSec.options.dateBirth} onChange={handleOnChange} />
-                    <TextCustom label={'Email'} id={'email'} value={userSec.options.email} onChange={handleOnChange} />
-                    <Vehicle2Form setLoaded={setLoaded} loaded={loaded} user={userSec} parte={parte} setParte={setParte} handleOnChange={handleOnChange}/>
-                </View>
+            <View>
+                <CheckBox
+                    disabled={false}
+                    value={toggleCheckBox}
+                    onValueChange={(newValue) => setToggleCheckBox(newValue)}
+                />
+                <Text >Do you like React Native?</Text>
+            </View>
+            {toggleCheckBox &&
+                <DropDownPicker
+                    listMode='MODAL'
+                    open={open}
+                    value={value}
+                    items={users}
+                    setOpen={setOpen}
+                    setValue={setValue}
+                    setItems={setUsers}
+                    onChangeValue={handleDropDown}
+                />
             }
-        </View>
+            <ScrollView>
+                {userSec &&
+                    <View style={{ paddingTop: '4%' }}>
+                        <TextCustom label={'Name'} id={'name'} value={userSec.options.name} onChange={handleOnChange} />
+                        <TextCustom label={'Surname'} id={'surname'} value={userSec.options.surname} onChange={handleOnChange} />
+                        <TextCustom label={'Phone'} id={'phone'} value={userSec.options.tlf} onChange={handleOnChange} />
+                        <TextCustom label={'Date Birth'} id={'dateBirth'} value={userSec.options.dateBirth} onChange={handleOnChange} />
+                        <TextCustom label={'Email'} id={'email'} value={userSec.options.email} onChange={handleOnChange} />
+                        <TouchableOpacity onPress={() => navigation.navigate("Vehicle2Form")}>
+                            <Text>Siguiente</Text>
+                        </TouchableOpacity>
+                        {/* <Vehicle2Form setLoaded={setLoaded} loaded={loaded} user={userSec} parte={parte} setParte={setParte} handleOnChange={handleOnChange} /> */}
+                    </View>
+                }
+            </ScrollView>
+        </ScrollView>
+
     )
 
 

@@ -6,20 +6,31 @@ import axios from 'axios';
 import TextCustom from '../../../../Components/TextCustom';
 import Loader from '../../../../Components/Loader';
 import { StorageKeys } from '../../../../../utils/StorageKeys';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
 
 
-const UserForm = ({ setLoaded, loaded, setParte, parte ,handleOnChange}) => {
-
-
+const UserForm = () => {
+    // const [storedParte,setStoredParte]=useState({});
+    const [loaded, setLoaded] = useState(false);
     const [user, setUser] = useState({});
+    const [parte, setParte] = useState({})
+
+
+    const navigation = useNavigation()
 
     useEffect(() => {
         fetchUser();
     }, [])
 
+    
+
     const fetchUser = async () => {
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
+        const p = await AsyncStorage.getItem(StorageKeys.PARTE)
+        setParte(p)
+
 
         axios.get(`${ENDPOINT_user}/getUser.php`, {
             params: {
@@ -32,8 +43,9 @@ const UserForm = ({ setLoaded, loaded, setParte, parte ,handleOnChange}) => {
                 // console.log({userData});
                 if (userData.status) {
                     setUser(userData.user)
-                    parte.client1=userData.user.id
-                    // setParte(parte)
+                    // parte.client1=userData.user.id
+                    // setParte({ ...parte })
+                    // console.log(parte);
                 } else {
                     console.log("no se pudo obtener los datos del usuario");
                 }
@@ -43,16 +55,30 @@ const UserForm = ({ setLoaded, loaded, setParte, parte ,handleOnChange}) => {
             }).finally(() => setLoaded(true))
     }
 
+
+    const handleSiguiente = async () => {
+        await AsyncStorage.setItem(StorageKeys.PARTE, JSON.stringify(parte));
+
+        let par=await AsyncStorage.getItem(StorageKeys.PARTE)
+        const parteFormated=JSON.parse(par)
+        console.log(parteFormated);
+        navigation.navigate('VehicleForm');
+    };
+
     if (!loaded) return <Loader />
     return (
-        <View>
+        <ScrollView>
             <Text style={{ fontSize: 40 }}>Usuario A</Text>
-            <TextCustom label={'Name'} id={'name'} value={user.name} onChange={handleOnChange} />
-            <TextCustom label={'Surname'} id={'surname'} value={user.surname} onChange={handleOnChange} />
-            <TextCustom label={'Phone'} id={'tlf'} value={user.tlf} onChange={handleOnChange} />
-            <TextCustom label={'Date Birth'} id={'dateBirth'} value={user.dateBirth} onChange={handleOnChange} />
-            <TextCustom label={'Email'} id={'email'} value={user.email} onChange={handleOnChange} />
-        </View>
+
+            <TextCustom label={'Name'} id={'name'} value={user.name} />
+            <TextCustom label={'Surname'} id={'surname'} value={user.surname} />
+            <TextCustom label={'Phone'} id={'tlf'} value={user.tlf} />
+            <TextCustom label={'Date Birth'} id={'dateBirth'} value={user.dateBirth} />
+            <TextCustom label={'Email'} id={'email'} value={user.email} />
+            <TouchableOpacity onPress={handleSiguiente}>
+                <Text>Siguiente</Text>
+            </TouchableOpacity>
+        </ScrollView >
     )
 }
 
