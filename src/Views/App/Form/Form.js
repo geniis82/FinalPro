@@ -38,50 +38,46 @@ const Form = () => {
     //     vehiculo2: "",
     // })
 
+    // useEffect(() => {
+    //     cleanParte()
+    // }, [])
+
     useFocusEffect(
         useCallback(() => {
             // cleanParte()
             navigation.navigate("Cabecera");
-        }, [navigation.isFocused()]))
+        }, [navigation.isFocused()])
+    )
 
-    useEffect(() => {
-        // cleanParte()
-    })
+    // const save = async () => {
 
-    const cleanParte = async () => {
-        await AsyncStorage.removeItem(StorageKeys.PARTE)
-    }
-
-
-    const save = async () => {
-
-        axios.post(`${ENDPOINT_partes}/save.php`, {
-            ...parte
-        })
-            .then(res => {
-                const parteData = res.data
-                console.log(parteData);
-                if (parteData.status) {
-                    Alert.alert('Parte Eniado', 'El parte se ha enviado correctamente', [
-                        {
-                            text: 'Aceptar',
-                            onPress: () => navigation.navigate("Mis Partes"),
-                            style: 'cancel',
-                        },
-                    ]);
-                } else {
-                    Alert.alert('Error', 'Introduzca todos los campos', [
-                        {
-                            text: 'Cancelar',
-                            style: 'cancel',
-                        },
-                    ]);
-                }
-            })
-            .catch(error => {
-                console.error("error al crear parte", error);
-            }).finally(() => setLoaded(true))
-    }
+    //     axios.post(`${ENDPOINT_partes}/save.php`, {
+    //         ...parte
+    //     })
+    //         .then(res => {
+    //             const parteData = res.data
+    //             console.log(parteData);
+    //             if (parteData.status) {
+    //                 Alert.alert('Parte Eniado', 'El parte se ha enviado correctamente', [
+    //                     {
+    //                         text: 'Aceptar',
+    //                         onPress: () => navigation.navigate("Mis Partes"),
+    //                         style: 'cancel',
+    //                     },
+    //                 ]);
+    //             } else {
+    //                 Alert.alert('Error', 'Introduzca todos los campos', [
+    //                     {
+    //                         text: 'Cancelar',
+    //                         style: 'cancel',
+    //                     },
+    //                 ]);
+    //             }
+    //         })
+    //         .catch(error => {
+    //             console.error("error al crear parte", error);
+    //         }).finally(() => setLoaded(true))
+    // }
 
 
     // const handleOnChange = (e) => {
@@ -91,33 +87,21 @@ const Form = () => {
 
     return (
         <Stack.Navigator>
-            <Stack.Screen name='Cabecera' >
+            <Stack.Screen name='Cabecera' options={{headerShown:false}} >
                 {() => <CabeceraForm />}
             </Stack.Screen>
-            <Stack.Screen name='UserForm'  >
+            <Stack.Screen name='UserForm'  options={{headerShown:false}}>
                 {() => <UserForm />}
             </Stack.Screen>
-            <Stack.Screen name='VehicleForm' >
+            <Stack.Screen name='VehicleForm' options={{headerShown: false}}>
                 {() => <VehicleForm />}
             </Stack.Screen>
-            <Stack.Screen name='User2Form' >
+            <Stack.Screen name='User2Form' options={{headerShown: false}}>
                 {() => <User2Form />}
             </Stack.Screen>
-            <Stack.Screen name='Vehicle2Form' >
+            <Stack.Screen name='Vehicle2Form' options={{headerShown: false}}>
                 {() => <Vehicle2Form />}
             </Stack.Screen>
-
-
-            {/* <ScrollView style={{ padding: '4%' }}>
-                    <Text style={{ fontSize: 40 }}>Parte</Text>
-                    <UserForm setLoaded={setLoaded} loaded={loaded} setParte={setParte} parte={parte} handleOnChange={handleOnChange} />
-                    <VehicleForm setLoaded={setLoaded} loaded={loaded} setParte={setParte} parte={parte} handleOnChange={handleOnChange} />
-                    <View style={styles.container}>
-                        <TouchableOpacity style={styles.button} onPress={save}>
-                            <Text style={{ textAlign: 'center', color: 'white' }}>Enviar Parte</Text>
-                        </TouchableOpacity>
-                    </View>
-                </ScrollView> */}
         </Stack.Navigator>
 
 

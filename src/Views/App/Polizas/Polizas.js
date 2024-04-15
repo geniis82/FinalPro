@@ -60,7 +60,7 @@ const Polizas = () => {
 
     const renderItem = ({ item }) => {
 
-        const backgroundColor = item.id === selectedId ? '#cfd948' : '#f9c2ff';
+        const backgroundColor = item.id === selectedId ? '#9a89c0' : '#cfd948';
         const color = item.id === selectedId ? 'white' : 'black';
 
 

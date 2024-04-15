@@ -10,11 +10,12 @@ import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import Login from "./src/Views/Auth/Login/Login";
 import axios from "axios";
 import { ScreensPaths } from "./utils/ScreensPaths";
-import Icon from "react-native-ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Partes from './src/Views/App/Partes/Partes';
 import Form from './src/Views/App/Form/Form';
 import { ENDPOINT_auth } from './utils/endpoints';
+import Icon from 'react-native-vector-icons/Ionicons';
+
 
 const Stack = createStackNavigator();
 const Draw = createDrawerNavigator();
@@ -33,7 +34,7 @@ const MyDraws = () => {
                 // console.log(resp);
                 if (resp.status) {
                     // console.log(res.data);
-                    await AsyncStorage.multiRemove(['userToken', 'dni', 'idUser','parte']);
+                    await AsyncStorage.multiRemove(['userToken', 'dni', 'idUser', 'parte']);
                     navigation.navigate("Auth")
                 }
             })
@@ -42,13 +43,18 @@ const MyDraws = () => {
             });
     };
 
+
+
+
+
     return (
         <Draw.Navigator initialRouteName="My_Forms" drawerContent={item => (
             <DrawerContentScrollView {...item} >
                 <ImageBackground style={{ padding: 50 }} source={{ uri: "https://picsum.photos/200/300" }} />
                 <View style={{ flex: 1, backgroundColor: '#fff', paddingTop: 10 }}>
                     <DrawerItemList {...item} />
-                    <DrawerItem label='Log Out' onPress={handleLogout} style={{ marginTop: '225%' }} />
+                    <DrawerItem label='Log Out' onPress={handleLogout} style={{ marginTop: '170%' }}
+                        icon={() => <Icon name='log-out-outline' size={22} color='black' />} />
                 </View>
             </DrawerContentScrollView>
         )} screenOptions={{
@@ -57,14 +63,19 @@ const MyDraws = () => {
             }
         }}>
             {ScreensPaths.map((item, index) => (
-                <Stack.Screen initialParams={{initialRoute:"Cabecera"}} name={item.name}
+                <Stack.Screen
+                    initialParams={{ initialRoute: "Cabecera" }}
+                    name={item.name}
                     component={item.component}
-                    options={{ drawerIcon: () => { item.icon } }}
+                    options={{
+                        drawerIcon: () => (
+                            <Icon name={item.iconName} size={22} color="black" />
+                        )
+                    }}
                     key={index}
                 />
             ))}
         </Draw.Navigator>
-
     );
 }
 

@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StorageKeys } from '../../../../../utils/StorageKeys';
 import { ENDPOINT_partes, ENDPOINT_poliza, ENDPOINT_vehicles } from '../../../../../utils/endpoints';
@@ -10,16 +10,24 @@ import { View, StyleSheet, Alert, Text } from 'react-native';
 import axios from 'axios';
 import TextCustom from '../../../../Components/TextCustom';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 
-const Vehicle2Form = ({ setLoaded, loaded, setParte, parte, user, handleOnChange, navigation }) => {
+const Vehicle2Form = () => {
 
+    const route = useRoute();
+    const { user2Id } = route.params;
+
+    const navigation = useNavigation()
+
+    const [loaded, setLoaded] = useState(false);
 
     const [vehicles, setVehicles] = useState([]);
     const [poliza, setPoliza] = useState()
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState(null);
     const [vehicleSec, setVehicleSec] = useState();
+    const [parte, setParte] = useState({})
 
 
     useFocusEffect(
@@ -33,12 +41,17 @@ const Vehicle2Form = ({ setLoaded, loaded, setParte, parte, user, handleOnChange
     const fetchVehicle = async () => {
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
-        console.log(user);
+        const p = await AsyncStorage.getItem(StorageKeys.PARTE);
+        const storedParte = JSON.parse(p || '{}');
+        // console.log(p);
+        setParte(storedParte)
+
+        // console.log(user2Id);
         axios.get(`${ENDPOINT_vehicles}/getVehiclesUserById.php`, {
             params: {
                 dni,
                 token,
-                id: user
+                id: user2Id
             }
         })
             .then(res => {
@@ -88,10 +101,7 @@ const Vehicle2Form = ({ setLoaded, loaded, setParte, parte, user, handleOnChange
     }
 
 
-    const createParte = async () => {
-        const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
-        const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
-    }
+
 
     // const handleOnChange = (e) => {
     //     const { id, value } = e.target;
@@ -141,10 +151,14 @@ const Vehicle2Form = ({ setLoaded, loaded, setParte, parte, user, handleOnChange
             }).finally(() => setLoaded(true))
     }
 
+    const handleGoBack = () => {
+        navigation.goBack();
+    };
+
 
     return (
-        <ScrollView >
-            <Text style={{ fontSize: 40 }}>Vehiculo B</Text>
+        <ScrollView style={styles.container}>
+            <Text style={{ fontSize: 40, marginLeft: '4%' }}>Vehiculo B</Text>
             <DropDownPicker
                 listMode='MODAL'
                 open={open}
@@ -154,63 +168,62 @@ const Vehicle2Form = ({ setLoaded, loaded, setParte, parte, user, handleOnChange
                 setValue={setValue}
                 setItems={setVehicles}
                 onChangeValue={handleDropDown}
+                style={{ marginLeft: '4%', marginTop: '4%', flex: 1, width: '90%' }}
             />
 
-            <View style={styles.container}>
-                <TouchableOpacity style={styles.button} onPress={save}>
-                    <Text style={{ textAlign: 'center', color: 'white' }}>Enviar Parte</Text>
-                </TouchableOpacity>
-            </View>
+
             {vehicleSec &&
                 <View style={{ paddingTop: '4%' }}>
-                    <TextCustom label={'Matricula'} id={'matricula'} value={vehicleSec.label} onChange={handleOnChange} />
-                    <TextCustom label={'Marca'} id={'marca'} value={vehicleSec.options.marca} onChange={handleOnChange} />
-                    <TextCustom label={'Modelo'} id={'modelo'} value={vehicleSec.options.modelo} onChange={handleOnChange} />
+                    <TextCustom label={'Matricula'} id={'matricula'} value={vehicleSec.label} />
+                    <TextCustom label={'Marca'} id={'marca'} value={vehicleSec.options.marca} />
+                    <TextCustom label={'Modelo'} id={'modelo'} value={vehicleSec.options.modelo} />
                 </View>
             }
             {poliza &&
                 <View >
-                    <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} value={poliza.aseguradora_id[1]} onChange={handleOnChange} />
-                    <TextCustom label={'Numero de poliza'} id={'name'} value={poliza.name} onChange={handleOnChange} />
+                    <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} value={poliza.aseguradora_id[1]} />
+                    <TextCustom label={'Numero de poliza'} id={'name'} value={poliza.name} />
 
                 </View>
             }
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity onPress={handleGoBack} style={styles.button}>
+                    <Icon name='arrow-back-circle' size={55} style={styles.textButton} />
+                    {/* <Text style={styles.textButton}>Atras</Text> */}
+                </TouchableOpacity>
+                <TouchableOpacity onPress={save} style={styles.button}>
+                    <Icon name='send' size={55} style={styles.textButton} />
+                    {/* <Text style={styles.textButton}>Siguiente</Text> */}
+                </TouchableOpacity>
+            </View>
 
         </ScrollView>
-
-
     )
-
-
 
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        padding: 30,
-        justifyContent: 'center',
-        alignItems: 'center',
+        paddingTop: '5%',
+        paddingBottom: '5%'
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginTop: '6%',
+        marginBottom: '25%',
 
     },
-    textareaContainer: {
-        height: 180,
-        backgroundColor: '#fff'
-    },
-    textarea: {
-        textAlignVertical: 'top',  // hack android
-        height: 170,
-        fontSize: 14,
-        color: '#333',
-    },
     button: {
-        borderColor: 'black',
-        borderWidth: 1,
-        borderRadius: 5,
         padding: '4%',
-        width: 120,
-        backgroundColor: 'green'
-    }
+
+    },
+    textButton: {
+        textAlign: 'center',
+        color: '#9a89c0',
+        marginTop: '5%',
+    },
+
 });
 
 export default Vehicle2Form

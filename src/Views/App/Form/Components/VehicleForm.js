@@ -3,7 +3,7 @@ import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react'
 import { ENDPOINT_poliza, ENDPOINT_vehicles } from '../../../../../utils/endpoints';
 import Loader from '../../../../Components/Loader';
-import { Text, View } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import TextCustom from '../../../../Components/TextCustom';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { StorageKeys } from '../../../../../utils/StorageKeys';
@@ -15,6 +15,8 @@ import Vehicle2Form from './Vehicle2Form';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { setParteOnAsyncStorage } from '../../../../../utils/GeneralFunctions';
 
+import Icon from 'react-native-vector-icons/Ionicons';
+
 const VehicleForm = () => {
 
     const navigation = useNavigation()
@@ -24,10 +26,10 @@ const VehicleForm = () => {
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState(null);
     const [vehicleSec, setVehicleSec] = useState();
-
     const [parte, setParte] = useState({})
-
     const [loaded, setLoaded] = useState(false);
+
+
     // useEffect(() => {
     //     fetchVehicle()
     // }, [])
@@ -45,7 +47,11 @@ const VehicleForm = () => {
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
         const p = await AsyncStorage.getItem(StorageKeys.PARTE);
-        setParte(p)
+        const storedParte = JSON.parse(p || '{}');
+        console.log(p);
+        setParte(storedParte);
+        // setParte(p)
+
         axios.get(`${ENDPOINT_vehicles}/getVehiclesByUser.php`, {
             params: {
                 dni,
@@ -106,21 +112,24 @@ const VehicleForm = () => {
     const handleDropDown = () => {
         const itemSelect = vehicles.find(item => item.value === value)
         setVehicleSec(itemSelect)
-        // setParte({ ...parte, ["vehiculo"] : value})
+        const updatedParte = { ...parte, vehiculo: value };
+        setParte(updatedParte);
         fetchAseguradora()
-        // console.log(parte);
+        console.log(parte);
     }
 
     const handleSiguiente = async () => {
-        
         await setParteOnAsyncStorage(StorageKeys.PARTE, JSON.stringify(parte));
-        console.log(await AsyncStorage.getItem(StorageKeys.PARTE));
+        console.log(parte);
         navigation.navigate('User2Form');
     };
 
+    const handleGoBack = () => {
+        navigation.goBack();
+    };
     return (
-        <ScrollView style={{ paddingBottom: '10%' }}>
-            <Text style={{ fontSize: 40 }}>Vehiculo A</Text>
+        <ScrollView style={styles.container}>
+            <Text style={{ fontSize: 40, marginLeft: '4%' }}>Vehiculo A</Text>
             <DropDownPicker
                 listMode='MODAL'
                 open={open}
@@ -130,30 +139,60 @@ const VehicleForm = () => {
                 setValue={setValue}
                 setItems={setVehicles}
                 onChangeValue={handleDropDown}
+                style={{ marginLeft: '4%', marginTop: '4%', flex: 1, width: '90%' }}
             />
-        
-                {vehicleSec &&
-                    <View style={{ paddingTop: '4%' }}>
-                        <TextCustom label={'Matricula'} id={'matricula'} value={vehicleSec.label} />
-                        <TextCustom label={'Marca'} id={'marca'} value={vehicleSec.options.marca} />
-                        <TextCustom label={'Modelo'} id={'modelo'} value={vehicleSec.options.modelo} />
-                    </View>
-                }
-                {poliza &&
-                    <View>
-                        <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} value={poliza.aseguradora_id[1]} />
-                        <TextCustom label={'Numero de poliza'} id={'name'} value={poliza.name} />
-                        {/* <User2Form setLoaded={setLoaded} loaded={loaded} parte={parte} setParte={setParte} handleOnChange={handleOnChange} /> */}
-                        <TouchableOpacity onPress={handleSiguiente}>
-                            <Text>Siguiente</Text>
-                        </TouchableOpacity>
-                    </View>
-                }
-            
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity onPress={handleGoBack} style={styles.button}>
+                    <Icon name='arrow-back-circle' size={55} style={styles.textButton} />
+                    {/* <Text style={styles.textButton}>Atras</Text> */}
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
+                    <Icon name='arrow-forward-circle' size={55} style={styles.textButton} />
+                    {/* <Text style={styles.textButton}>Siguiente</Text> */}
+                </TouchableOpacity>
+            </View>
+
+            {vehicleSec &&
+                <View style={{ paddingTop: '4%' }}>
+                    <TextCustom label={'Matricula'} id={'matricula'} value={vehicleSec.label} />
+                    <TextCustom label={'Marca'} id={'marca'} value={vehicleSec.options.marca} />
+                    <TextCustom label={'Modelo'} id={'modelo'} value={vehicleSec.options.modelo} />
+                </View>
+            }
+            {poliza &&
+                <View>
+                    <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} value={poliza.aseguradora_id[1]} />
+                    <TextCustom label={'Numero de poliza'} id={'name'} value={poliza.name} />
+                    {/* <User2Form setLoaded={setLoaded} loaded={loaded} parte={parte} setParte={setParte} handleOnChange={handleOnChange} /> */}
+                </View>
+            }
         </ScrollView>
     )
 
-
 }
+
+const styles = StyleSheet.create({
+    container: {
+        paddingTop: '5%',
+        paddingBottom: '5%'
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginTop: '6%',
+        marginBottom: '25%',
+
+    },
+    button: {
+        padding: '4%',
+
+    },
+    textButton: {
+        textAlign: 'center',
+        color: '#9a89c0',
+        marginTop: '5%'
+    },
+
+});
 
 export default VehicleForm;

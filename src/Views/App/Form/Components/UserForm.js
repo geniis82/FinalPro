@@ -1,17 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from 'react'
 import { ENDPOINT_user } from '../../../../../utils/endpoints';
-import { Text, View } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import axios from 'axios';
 import TextCustom from '../../../../Components/TextCustom';
 import Loader from '../../../../Components/Loader';
 import { StorageKeys } from '../../../../../utils/StorageKeys';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 
 const UserForm = () => {
-    // const [storedParte,setStoredParte]=useState({});
     const [loaded, setLoaded] = useState(false);
     const [user, setUser] = useState({});
     const [parte, setParte] = useState({})
@@ -23,13 +23,16 @@ const UserForm = () => {
         fetchUser();
     }, [])
 
-    
+
 
     const fetchUser = async () => {
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
         const p = await AsyncStorage.getItem(StorageKeys.PARTE)
-        setParte(p)
+
+        const storedParte = JSON.parse(p || '{}');
+        console.log(p);
+        setParte(storedParte);
 
 
         axios.get(`${ENDPOINT_user}/getUser.php`, {
@@ -43,8 +46,9 @@ const UserForm = () => {
                 // console.log({userData});
                 if (userData.status) {
                     setUser(userData.user)
-                    // parte.client1=userData.user.id
-                    // setParte({ ...parte })
+                    // const updatedParte = { ...storedParte, client1: userData.user.id ,...parte};
+                    const updatedParte = { ...storedParte, client1: userData.user.id };
+                    setParte(updatedParte);
                     // console.log(parte);
                 } else {
                     console.log("no se pudo obtener los datos del usuario");
@@ -58,28 +62,60 @@ const UserForm = () => {
 
     const handleSiguiente = async () => {
         await AsyncStorage.setItem(StorageKeys.PARTE, JSON.stringify(parte));
-
-        let par=await AsyncStorage.getItem(StorageKeys.PARTE)
-        const parteFormated=JSON.parse(par)
-        console.log(parteFormated);
+        console.log(parte);
         navigation.navigate('VehicleForm');
+    };
+    const handleGoBack = () => {
+        navigation.goBack();
     };
 
     if (!loaded) return <Loader />
     return (
-        <ScrollView>
-            <Text style={{ fontSize: 40 }}>Usuario A</Text>
+        <ScrollView style={styles.container}>
+            <Text style={{ fontSize: 40, marginLeft: '4%' }}>Usuario A</Text>
 
             <TextCustom label={'Name'} id={'name'} value={user.name} />
             <TextCustom label={'Surname'} id={'surname'} value={user.surname} />
             <TextCustom label={'Phone'} id={'tlf'} value={user.tlf} />
             <TextCustom label={'Date Birth'} id={'dateBirth'} value={user.dateBirth} />
             <TextCustom label={'Email'} id={'email'} value={user.email} />
-            <TouchableOpacity onPress={handleSiguiente}>
-                <Text>Siguiente</Text>
-            </TouchableOpacity>
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity onPress={handleGoBack} style={styles.button}>
+                    <Icon name='arrow-back-circle' size={55} style={styles.textButton}/>
+                    {/* <Text style={styles.textButton}>Atras</Text> */}
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
+                    <Icon name='arrow-forward-circle' size={55}  style={styles.textButton}/>
+                    {/* <Text style={styles.textButton}>Siguiente</Text> */}
+                </TouchableOpacity>
+            </View>
         </ScrollView >
     )
 }
+
+
+const styles = StyleSheet.create({
+    container: {
+        paddingTop: '5%',
+        paddingBottom: '5%'
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginTop: '6%',
+        marginBottom: '25%',
+
+    },
+    button: {
+        padding: '4%',
+
+    },
+    textButton: {
+        textAlign: 'center',
+        color: '#9a89c0',
+        marginTop: '5%',    
+    },
+
+});
 
 export default UserForm;

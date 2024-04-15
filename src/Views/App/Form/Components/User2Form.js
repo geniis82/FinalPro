@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react'
 
-import { View } from 'react-native';
-import { useFocusEffect } from "@react-navigation/native";
+import { View, StyleSheet } from 'react-native';
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StorageKeys } from '../../../../../utils/StorageKeys';
 import axios from 'axios';
@@ -13,6 +13,7 @@ import TextCustom from '../../../../Components/TextCustom';
 import Vehicle2Form from './Vehicle2Form';
 import CheckBox from '@react-native-community/checkbox';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 
 
@@ -25,7 +26,9 @@ const User2Form = () => {
     const [value, setValue] = useState(null);
     const [userSec, setUserSec] = useState();
     const [toggleCheckBox, setToggleCheckBox] = useState(false);
+    const [user2Id, setUser2ID] = useState({})
 
+    const navigation = useNavigation()
 
     useFocusEffect(
         useCallback(() => {
@@ -38,6 +41,11 @@ const User2Form = () => {
     const fetchUser = async () => {
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
+
+        const p = await AsyncStorage.getItem(StorageKeys.PARTE);
+        const storedParte = JSON.parse(p || '{}');
+        console.log(p);
+        setParte(storedParte);
 
         axios.get(`${ENDPOINT_user}/getAllUsers.php`, {
             params: {
@@ -74,14 +82,26 @@ const User2Form = () => {
     const handleDropDown = () => {
         const itemSelect = users.find(item => item.value === value)
         setUserSec(itemSelect)
-        parte.client2 = value
-        // setParte(parte)
+        const updatedParte = { ...parte, client2: value };
+        setUser2ID(value)
+        setParte(updatedParte);
         console.log(parte);
     }
 
+    const handleSiguiente = async () => {
+        await AsyncStorage.setItem(StorageKeys.PARTE, JSON.stringify(parte));
+        console.log(parte);
+        console.log(user2Id);
+        navigation.navigate('Vehicle2Form', { user2Id });
+    }
+
+    const handleGoBack = () => {
+        navigation.goBack();
+    };
+
     return (
-        <ScrollView style={{ paddingBottom: '4%' }}>
-            <Text style={{ fontSize: 40 }}>Usuario B</Text>
+        <ScrollView style={styles.container}>
+            <Text style={{ fontSize: 40, marginLeft: '4%' }}>Usuario B</Text>
             <View>
                 <CheckBox
                     disabled={false}
@@ -90,6 +110,7 @@ const User2Form = () => {
                 />
                 <Text >Do you like React Native?</Text>
             </View>
+
             {toggleCheckBox &&
                 <DropDownPicker
                     listMode='MODAL'
@@ -100,28 +121,57 @@ const User2Form = () => {
                     setValue={setValue}
                     setItems={setUsers}
                     onChangeValue={handleDropDown}
+                    style={{ marginLeft: '4%', marginTop: '4%', flex: 1, width: '90%' }}
                 />
             }
-            <ScrollView>
-                {userSec &&
-                    <View style={{ paddingTop: '4%' }}>
-                        <TextCustom label={'Name'} id={'name'} value={userSec.options.name} onChange={handleOnChange} />
-                        <TextCustom label={'Surname'} id={'surname'} value={userSec.options.surname} onChange={handleOnChange} />
-                        <TextCustom label={'Phone'} id={'phone'} value={userSec.options.tlf} onChange={handleOnChange} />
-                        <TextCustom label={'Date Birth'} id={'dateBirth'} value={userSec.options.dateBirth} onChange={handleOnChange} />
-                        <TextCustom label={'Email'} id={'email'} value={userSec.options.email} onChange={handleOnChange} />
-                        <TouchableOpacity onPress={() => navigation.navigate("Vehicle2Form")}>
-                            <Text>Siguiente</Text>
-                        </TouchableOpacity>
-                        {/* <Vehicle2Form setLoaded={setLoaded} loaded={loaded} user={userSec} parte={parte} setParte={setParte} handleOnChange={handleOnChange} /> */}
-                    </View>
-                }
-            </ScrollView>
+
+            {userSec &&
+                <View style={{ paddingTop: '4%' }}>
+                    <TextCustom label={'Name'} id={'name'} value={userSec.options.name} />
+                    <TextCustom label={'Surname'} id={'surname'} value={userSec.options.surname} />
+                    <TextCustom label={'Phone'} id={'phone'} value={userSec.options.tlf} />
+                    <TextCustom label={'Date Birth'} id={'dateBirth'} value={userSec.options.dateBirth} />
+                    <TextCustom label={'Email'} id={'email'} value={userSec.options.email} />
+                    {/* <Vehicle2Form setLoaded={setLoaded} loaded={loaded} user={userSec} parte={parte} setParte={setParte} handleOnChange={handleOnChange} /> */}
+                </View>
+            }
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity onPress={handleGoBack} style={styles.button}>
+                    <Icon name='arrow-back-circle' size={55} style={styles.textButton} />
+                    {/* <Text style={styles.textButton}>Atras</Text> */}
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
+                    <Icon name='arrow-forward-circle' size={55} style={styles.textButton} />
+                    {/* <Text style={styles.textButton}>Siguiente</Text> */}
+                </TouchableOpacity>
+            </View>
         </ScrollView>
 
     )
 
-
 }
+const styles = StyleSheet.create({
+    container: {
+        paddingTop: '5%',
+        paddingBottom: '5%'
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginTop: '6%',
+        marginBottom: '25%',
+
+    },
+    button: {
+        padding: '4%',
+
+    },
+    textButton: {
+        textAlign: 'center',
+        color: '#9a89c0',
+        marginTop: '5%',
+    },
+
+});
 
 export default User2Form

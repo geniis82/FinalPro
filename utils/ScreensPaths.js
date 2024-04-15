@@ -11,19 +11,22 @@ export const ScreensPaths = [
         title: 'My Forms',
         component: Partes,
         name: 'Mis Partes',
-        showOnBar: true
+        showOnBar: true,
+        iconName:'home-outline'
     },
     {
         title: 'Form',
         component: Form,
         name: 'Parte',
-        showOnBar: true
+        showOnBar: true,
+        iconName:'document-outline'
     },
     {
         title: 'Polizas',
         component: Polizas,
         name: 'Polizas',
-        showOnBar: false
+        showOnBar: true,
+        iconName:'list'
 
     },
     {
