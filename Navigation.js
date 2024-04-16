@@ -23,25 +23,6 @@ const Draw = createDrawerNavigator();
 
 const MyDraws = () => {
     const navigation = useNavigation()
-    const handleLogout = async () => {
-        const dni = await AsyncStorage.getItem('dni');
-        axios
-            .post(`${ENDPOINT_auth}/logout.php`, {
-                dni
-            })
-            .then(async res => {
-                let resp = res.data
-                // console.log(resp);
-                if (resp.status) {
-                    // console.log(res.data);
-                    await AsyncStorage.multiRemove(['userToken', 'dni', 'idUser', 'parte']);
-                    navigation.navigate("Auth")
-                }
-            })
-            .catch(e => {
-                console.log(`logout error ${e}`);
-            });
-    };
 
 
 
@@ -53,8 +34,6 @@ const MyDraws = () => {
                 <ImageBackground style={{ padding: 50 }} source={{ uri: "https://picsum.photos/200/300" }} />
                 <View style={{ flex: 1, backgroundColor: '#fff', paddingTop: 10 }}>
                     <DrawerItemList {...item} />
-                    <DrawerItem label='Log Out' onPress={handleLogout} style={{ marginTop: '170%' }}
-                        icon={() => <Icon name='log-out-outline' size={22} color='black' />} />
                 </View>
             </DrawerContentScrollView>
         )} screenOptions={{
@@ -82,7 +61,7 @@ const MyDraws = () => {
 
 
 const Navigation = () => {
-    // const {userInfo, splashLoading} = useContext(AuthContext);
+
     return (
         <NavigationContainer  >
             <Stack.Navigator initialRouteName="Login" >

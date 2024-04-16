@@ -2,6 +2,7 @@ import UserForm from "../src/Views/App/Form/Components/UserForm";
 import Form from "../src/Views/App/Form/Form";
 import InfoPartes from "../src/Views/App/Partes/InfoPartes";
 import Partes from "../src/Views/App/Partes/Partes";
+import Perfil from "../src/Views/App/Perfil/Perfil";
 import InfoPolizas from "../src/Views/App/Polizas/InfoPolizas";
 import Polizas from "../src/Views/App/Polizas/Polizas";
 import { Paths } from "./paths";
@@ -28,6 +29,13 @@ export const ScreensPaths = [
         showOnBar: true,
         iconName:'list'
 
+    },
+    {
+        title: 'Perfil',
+        component: Perfil,
+        name: "Perfil",
+        showOnBar: false,
+        iconName:'person-outline'
     },
     {
         title: 'Info partes',

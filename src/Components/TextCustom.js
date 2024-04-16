@@ -4,7 +4,7 @@ import { Text } from 'react-native-elements';
 
 
 
-const TextCustom = ({ label, value, onChange, id, readOnly ,multiline,num}) => {
+const TextCustom = ({ label, value, onChange, id, readOnly ,multiline,num,keyboardType,maxLength,secureTextEntry}) => {
 
 
     const handleOnChange = (value) => {
@@ -14,7 +14,7 @@ const TextCustom = ({ label, value, onChange, id, readOnly ,multiline,num}) => {
     return (
         <View>
             <Text style={styles.textLabel}>{label}</Text>
-            <TextInput style={styles.input} id={id} onChangeText={handleOnChange} readOnly={readOnly} multiline={multiline} numberOfLines={num} >{value}</TextInput>
+            <TextInput style={styles.input} id={id} onChangeText={handleOnChange} readOnly={readOnly} secureTextEntry={secureTextEntry} multiline={multiline} numberOfLines={num} keyboardType={keyboardType} maxLength={maxLength}>{value}</TextInput>
         </View>
     )
 }

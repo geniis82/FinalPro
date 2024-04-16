@@ -141,16 +141,6 @@ const VehicleForm = () => {
                 onChangeValue={handleDropDown}
                 style={{ marginLeft: '4%', marginTop: '4%', flex: 1, width: '90%' }}
             />
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={handleGoBack} style={styles.button}>
-                    <Icon name='arrow-back-circle' size={55} style={styles.textButton} />
-                    {/* <Text style={styles.textButton}>Atras</Text> */}
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
-                    <Icon name='arrow-forward-circle' size={55} style={styles.textButton} />
-                    {/* <Text style={styles.textButton}>Siguiente</Text> */}
-                </TouchableOpacity>
-            </View>
 
             {vehicleSec &&
                 <View style={{ paddingTop: '4%' }}>
@@ -166,6 +156,16 @@ const VehicleForm = () => {
                     {/* <User2Form setLoaded={setLoaded} loaded={loaded} parte={parte} setParte={setParte} handleOnChange={handleOnChange} /> */}
                 </View>
             }
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity onPress={handleGoBack} style={styles.button}>
+                    <Icon name='arrow-back-circle' size={55} style={styles.textButton} />
+                    {/* <Text style={styles.textButton}>Atras</Text> */}
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
+                    <Icon name='arrow-forward-circle' size={55} style={styles.textButton} />
+                    {/* <Text style={styles.textButton}>Siguiente</Text> */}
+                </TouchableOpacity>
+            </View>
         </ScrollView>
     )
 

@@ -17,73 +17,14 @@ import Vehicle2Form from './Components/Vehicle2Form';
 
 const Form = () => {
     const Stack = createStackNavigator();
-
-    const dni = AsyncStorage.getItem(StorageKeys.USER_DNI)
-    const token = AsyncStorage.getItem(StorageKeys.USER_TOKEN)
-    const idUser = AsyncStorage.getItem(StorageKeys.USER_ID)
-
-
-
-    const [loaded, setLoaded] = useState(false);
-    const [showFirstScreen, setShowFirstScreen] = useState(true);
     const navigation = useNavigation()
-    // const [parte, setParte] = useState({
-    //     dataParte: "",
-    //     location: "",
-    //     addres: "",
-    //     descripcion: "",
-    //     client1: "",
-    //     vehiculo: "",
-    //     client2: "",
-    //     vehiculo2: "",
-    // })
-
-    // useEffect(() => {
-    //     cleanParte()
-    // }, [])
 
     useFocusEffect(
         useCallback(() => {
-            // cleanParte()
             navigation.navigate("Cabecera");
         }, [navigation.isFocused()])
     )
 
-    // const save = async () => {
-
-    //     axios.post(`${ENDPOINT_partes}/save.php`, {
-    //         ...parte
-    //     })
-    //         .then(res => {
-    //             const parteData = res.data
-    //             console.log(parteData);
-    //             if (parteData.status) {
-    //                 Alert.alert('Parte Eniado', 'El parte se ha enviado correctamente', [
-    //                     {
-    //                         text: 'Aceptar',
-    //                         onPress: () => navigation.navigate("Mis Partes"),
-    //                         style: 'cancel',
-    //                     },
-    //                 ]);
-    //             } else {
-    //                 Alert.alert('Error', 'Introduzca todos los campos', [
-    //                     {
-    //                         text: 'Cancelar',
-    //                         style: 'cancel',
-    //                     },
-    //                 ]);
-    //             }
-    //         })
-    //         .catch(error => {
-    //             console.error("error al crear parte", error);
-    //         }).finally(() => setLoaded(true))
-    // }
-
-
-    // const handleOnChange = (e) => {
-    //     const { id, value } = e.target;
-    //     setParte({ ...parte, [id]: value })
-    // }
 
     return (
         <Stack.Navigator>
@@ -103,8 +44,6 @@ const Form = () => {
                 {() => <Vehicle2Form />}
             </Stack.Screen>
         </Stack.Navigator>
-
-
     );
 }
 
