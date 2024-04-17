@@ -68,8 +68,12 @@ const CambiarEmialYTelefono = () => {
 
     const handleGuardar = async () => {
         const idUser = await AsyncStorage.getItem(StorageKeys.USER_ID)
+        const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
+        const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
 
         axios.post(`${ENDPOINT_user}/setNewEmailPhone.php`, {
+            dni,
+            token,
             id: idUser,
             email: user.email,
             phone: user.tlf,

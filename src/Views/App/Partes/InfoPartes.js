@@ -54,11 +54,10 @@ const InfoPartes = () => {
     if (!loaded) return <Loader />
 
     return (
-        <ScrollView>
+        <ScrollView style={{marginBottom:'4%'}}>
             <CabeceraInfoPartes parte={parte} handleOnChange={handleOnChange} />
             <ParteVehiculo1 parte={parte} handleOnChange={handleOnChange} />
             <ParteVehiculo2 parte={parte} handleOnChange={handleOnChange} />
-            <TextCustom label={'Descripcion'} value={parte.descripcion} readOnly={true}/>
         </ScrollView>
     )
 }

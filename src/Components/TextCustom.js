@@ -4,7 +4,7 @@ import { Text } from 'react-native-elements';
 
 
 
-const TextCustom = ({ label, value, onChange, id, readOnly ,multiline,num,keyboardType,maxLength,secureTextEntry}) => {
+const TextCustom = ({ label, value, onChange, id, readOnly, multiline, num, keyboardType, maxLength, secureTextEntry, placeholder }) => {
 
 
     const handleOnChange = (value) => {
@@ -12,9 +12,9 @@ const TextCustom = ({ label, value, onChange, id, readOnly ,multiline,num,keyboa
     }
 
     return (
-        <View>
-            <Text style={styles.textLabel}>{label}</Text>
-            <TextInput style={styles.input} id={id} onChangeText={handleOnChange} readOnly={readOnly} secureTextEntry={secureTextEntry} multiline={multiline} numberOfLines={num} keyboardType={keyboardType} maxLength={maxLength}>{value}</TextInput>
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'stretch', marginTop: '2%' }}>
+            <Text style={[styles.textLabel, { width: '24%' }]}>{label}</Text>
+            <TextInput style={[styles.input, { width: '65%' }]} id={id} placeholder={placeholder} onChangeText={handleOnChange} readOnly={readOnly} secureTextEntry={secureTextEntry} multiline={multiline} numberOfLines={num} keyboardType={keyboardType} maxLength={maxLength}>{value}</TextInput>
         </View>
     )
 }
@@ -24,19 +24,19 @@ export default TextCustom;
 
 const styles = StyleSheet.create({
 
-    textLabel:{
-        fontSize:22,
-        marginLeft:'5%',
-
+    textLabel: {
+        fontSize: 15,
+        marginLeft: '5%',
+        marginTop: '4%'
     },
     input: {
-        width: '80%',
-        marginTop: '2%',
+        // marginTop: '2%',
         marginBottom: '5%',
-        marginLeft: '5%',
+        marginLeft: '3%',
         borderWidth: 1,
         paddingStart: '5%',
         borderColor: 'black',
-        borderRadius:15
+        borderRadius: 15,
+
     }
 });

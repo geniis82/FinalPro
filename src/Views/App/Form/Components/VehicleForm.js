@@ -50,8 +50,6 @@ const VehicleForm = () => {
         const storedParte = JSON.parse(p || '{}');
         console.log(p);
         setParte(storedParte);
-        // setParte(p)
-
         axios.get(`${ENDPOINT_vehicles}/getVehiclesByUser.php`, {
             params: {
                 dni,
@@ -131,7 +129,8 @@ const VehicleForm = () => {
         <ScrollView style={styles.container}>
             <Text style={{ fontSize: 40, marginLeft: '4%' }}>Vehiculo A</Text>
             <DropDownPicker
-                listMode='MODAL'
+                listMode='SCROLLVIEW'
+                placeholder='Seleccione un vehiculo'
                 open={open}
                 value={value}
                 items={vehicles}
@@ -140,8 +139,8 @@ const VehicleForm = () => {
                 setItems={setVehicles}
                 onChangeValue={handleDropDown}
                 style={{ marginLeft: '4%', marginTop: '4%', flex: 1, width: '90%' }}
+                dropDownContainerStyle={{ marginLeft: '4%', marginTop: '4%',  width: '89.5%' }}
             />
-
             {vehicleSec &&
                 <View style={{ paddingTop: '4%' }}>
                     <TextCustom label={'Matricula'} id={'matricula'} value={vehicleSec.label} />
@@ -153,7 +152,6 @@ const VehicleForm = () => {
                 <View>
                     <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} value={poliza.aseguradora_id[1]} />
                     <TextCustom label={'Numero de poliza'} id={'name'} value={poliza.name} />
-                    {/* <User2Form setLoaded={setLoaded} loaded={loaded} parte={parte} setParte={setParte} handleOnChange={handleOnChange} /> */}
                 </View>
             }
             <View style={styles.buttonContainer}>

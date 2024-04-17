@@ -50,11 +50,11 @@ const ParteVehiculo2 = ({parte,handleOnChange}) => {
 
     return (
         <View>
-            <Text style={{fontSize:40}}>Vehiculo B</Text>
+            <Text style={{ fontSize: 40 ,marginLeft:'4%'}}>Vehiculo B</Text>
             <TextCustom label={'Matricula'} id={'matricula2'} value={vehicle.label} onChange={handleOnChange} readOnly={true}/>
             <TextCustom label={'Marca'} id={'marca2'} value={vehicle?.options?.marca} onChange={handleOnChange} readOnly={true}/>
             <TextCustom label={'Modelo'} id={'modelo2'} value={vehicle?.options?.modelo} onChange={handleOnChange} readOnly={true}/>
-            <TextCustom label={'Nombre Propietario'} id={'nameCliente2'} value={parte.client2[1]} onChange={handleOnChange} readOnly={true}/>
+            <TextCustom label={'Nombre Propietario'} id={'nameCliente2'} value={parte.client2[1].split(" - ").pop(-1)} onChange={handleOnChange} readOnly={true}/>
         </View>
     )
 }

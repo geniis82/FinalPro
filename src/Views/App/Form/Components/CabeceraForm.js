@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
     TouchableOpacity,
     View,
@@ -7,7 +7,7 @@ import {
 import TextCustom from '../../../../Components/TextCustom';
 import moment from 'moment'
 import { Text } from 'react-native-elements';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { setParteOnAsyncStorage } from '../../../../../utils/GeneralFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StorageKeys } from '../../../../../utils/StorageKeys';
@@ -28,11 +28,16 @@ const CabeceraForm = () => {
         descripcion: ''
     });
 
+    
+    useFocusEffect(
+        useCallback(() => {
+            cleanParte();
+        }, []));
 
-    useEffect(() => {
-        cleanParte();
-        // fetchData();
-    }, []);
+    // useEffect(() => {
+    //     cleanParte();
+    //     // fetchData();
+    // }, []);
 
     const cleanParte = async () => {
         await AsyncStorage.removeItem(StorageKeys.PARTE)
@@ -44,13 +49,6 @@ const CabeceraForm = () => {
         }));
     }
 
-
-    // const fetchData = async () => {
-    //     const storedParte = await AsyncStorage.getItem(StorageKeys.PARTE);
-    //     if (storedParte) {
-    //         setParte(storedParte);
-    //     }
-    // };
 
     const handleOnChange = (e) => {
         const { id, value } = e.target;

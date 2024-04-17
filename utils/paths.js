@@ -1,4 +1,4 @@
 export const Paths = {
-    parts_info: 'Info Partes',
-    poliza_info: 'Info Polizas',
+    parts_info: 'Informacion del Parte',
+    poliza_info: 'Informacion de la Poliza',
 }

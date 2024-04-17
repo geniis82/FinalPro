@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert, Switch } from 'react-native';
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StorageKeys } from '../../../../../utils/StorageKeys';
@@ -8,11 +8,11 @@ import axios from 'axios';
 import { ENDPOINT_user } from '../../../../../utils/endpoints';
 import Loader from '../../../../Components/Loader';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { Text } from 'react-native-elements';
+import { SearchBar, Text } from 'react-native-elements';
 import TextCustom from '../../../../Components/TextCustom';
 import Vehicle2Form from './Vehicle2Form';
 import CheckBox from '@react-native-community/checkbox';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView, TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 
@@ -24,9 +24,10 @@ const User2Form = () => {
     const [users, setUsers] = useState([])
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState(null);
-    const [userSec, setUserSec] = useState();
+    const [userSec, setUserSec] = useState({});
     const [toggleCheckBox, setToggleCheckBox] = useState(false);
     const [user2Id, setUser2ID] = useState({})
+    const [search, setSearch] = useState("")
 
     const navigation = useNavigation()
 
@@ -37,6 +38,7 @@ const User2Form = () => {
             setUserSec("")
         }, [])
     );
+
 
     const fetchUser = async () => {
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
@@ -79,14 +81,14 @@ const User2Form = () => {
     if (!loaded) return <Loader />
 
 
-    const handleDropDown = () => {
-        const itemSelect = users.find(item => item.value === value)
-        setUserSec(itemSelect)
-        const updatedParte = { ...parte, client2: value };
-        setUser2ID(value)
-        setParte(updatedParte);
-        console.log(parte);
-    }
+    // const handleDropDown = () => {
+    //     const itemSelect = users.find(item => item.value === value)
+    //     setUserSec(itemSelect)
+    //     const updatedParte = { ...parte, client2: value };
+    //     setUser2ID(value)
+    //     setParte(updatedParte);
+    //     console.log(parte);
+    // }
 
     const handleSiguiente = async () => {
         await AsyncStorage.setItem(StorageKeys.PARTE, JSON.stringify(parte));
@@ -99,50 +101,79 @@ const User2Form = () => {
         navigation.goBack();
     };
 
+    const handleOnChange = (text) => {
+        setSearch(text);
+    };
+
+    const filterUser = () => {
+        const user = users.find(item => item.options.dni === search);
+        // console.log(user);
+        if (user === undefined) {
+            Alert.alert('Error', 'El usuario introducido no es valido'), [
+                {
+                    text: 'Cancelar',
+                    style: 'cancel'
+                },
+            ]
+        } else {
+            setUserSec(user)
+            setUser2ID(user.value)
+            const updatedParte = { ...parte, client2: user.value };
+            setParte(updatedParte);
+        }
+    }
+    const cleanFields = (value) => {
+        setUserSec(null)
+        setUser2ID({})
+        const updatedParte = { ...parte, client2: user2Id };
+        setParte(updatedParte);
+        if (!value) {
+            setToggleCheckBox(value)
+            // setUserSec({})
+        } else {
+            setSearch('')
+            // setUserSec(null)
+            setToggleCheckBox(value)
+        }
+    }
+
     return (
         <ScrollView style={styles.container}>
             <Text style={{ fontSize: 40, marginLeft: '4%' }}>Usuario B</Text>
-            <View>
-                <CheckBox
-                    disabled={false}
+            <View style={styles.toggleView}>
+                <Switch
+                    trackColor={{ false: '#cdcdcd', true: '#cdcdcd' }}
+                    thumbColor={toggleCheckBox ? '#cfd965' : '#9a89c0'}
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={(newValue) => cleanFields(newValue)}
                     value={toggleCheckBox}
-                    onValueChange={(newValue) => setToggleCheckBox(newValue)}
                 />
-                <Text >Do you like React Native?</Text>
+                <Text style={{ fontSize: 16 }}>Pertenece a la Gestoria?</Text>
             </View>
 
-            {toggleCheckBox &&
-                <DropDownPicker
-                    listMode='MODAL'
-                    open={open}
-                    value={value}
-                    items={users}
-                    setOpen={setOpen}
-                    setValue={setValue}
-                    setItems={setUsers}
-                    onChangeValue={handleDropDown}
-                    style={{ marginLeft: '4%', marginTop: '4%', flex: 1, width: '90%' }}
-                />
-            }
 
-            {userSec &&
-                <View style={{ paddingTop: '4%' }}>
-                    <TextCustom label={'Name'} id={'name'} value={userSec.options.name} />
-                    <TextCustom label={'Surname'} id={'surname'} value={userSec.options.surname} />
-                    <TextCustom label={'Phone'} id={'phone'} value={userSec.options.tlf} />
-                    <TextCustom label={'Date Birth'} id={'dateBirth'} value={userSec.options.dateBirth} />
-                    <TextCustom label={'Email'} id={'email'} value={userSec.options.email} />
-                    {/* <Vehicle2Form setLoaded={setLoaded} loaded={loaded} user={userSec} parte={parte} setParte={setParte} handleOnChange={handleOnChange} /> */}
+            {toggleCheckBox &&
+                <View style={styles.searchBar}>
+                    <TextInput style={styles.searchInput} value={search} onChangeText={handleOnChange} placeholder={"Buscar dni"} />
+                    {/* <TextCustom style value={search} id={'dniBus'} onChange={handleOnChange} placeholder={"Buscar dni"} /> */}
+                    <TouchableOpacity style={styles.button} onPress={filterUser}>
+                        <Icon name='search-circle-sharp' size={45} style={styles.searchButton} />
+                    </TouchableOpacity>
                 </View>
             }
+            <View >
+                <TextCustom label={'Nombre'} id={'name'} value={userSec ? userSec.options.name : ''} placeholder={"Introduzca nombre"} readOnly={toggleCheckBox} />
+                <TextCustom label={'Apellidos'} id={'surname'} value={userSec ? userSec.options.surname : ''} placeholder={"Introduzca apellidos"} readOnly={toggleCheckBox} />
+                <TextCustom label={'Telefono'} id={'phone'} value={userSec ? userSec.options.tlf : ''} placeholder={"Introduzca telefono"} readOnly={toggleCheckBox} />
+                <TextCustom label={'Fecha de Nacimiento'} id={'dateBirth'} value={userSec ? userSec.options.dateBirth : ''} placeholder={"Introduzca fecha de nacimiento"} readOnly={toggleCheckBox} />
+                <TextCustom label={'Correo Electronico'} id={'email'} value={userSec ? userSec.options.email : ''} placeholder={"Introduzca correo electronico"} readOnly={toggleCheckBox} />
+            </View>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={handleGoBack} style={styles.button}>
                     <Icon name='arrow-back-circle' size={55} style={styles.textButton} />
-                    {/* <Text style={styles.textButton}>Atras</Text> */}
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
                     <Icon name='arrow-forward-circle' size={55} style={styles.textButton} />
-                    {/* <Text style={styles.textButton}>Siguiente</Text> */}
                 </TouchableOpacity>
             </View>
         </ScrollView>
@@ -150,6 +181,7 @@ const User2Form = () => {
     )
 
 }
+
 const styles = StyleSheet.create({
     container: {
         paddingTop: '5%',
@@ -160,18 +192,39 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         marginTop: '6%',
         marginBottom: '25%',
-
     },
     button: {
         padding: '4%',
-
     },
     textButton: {
         textAlign: 'center',
         color: '#9a89c0',
         marginTop: '5%',
     },
+    searchInput: {
+        marginLeft: '3%',
+        borderWidth: 1,
+        paddingStart: '5%',
+        borderColor: 'black',
+        borderRadius: 15,
+        width: '80%'
+    },
+    searchButton: {
+        color: '#9a89c0',
+        width: '70%'
+    },
+    toggleView: {
+        flexDirection: 'row',
+        margin: '4%',
 
+    },
+    searchBar: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignContent: 'center',
+        padding: '3%',
+        borderRadius: 100
+    }
 });
 
 export default User2Form

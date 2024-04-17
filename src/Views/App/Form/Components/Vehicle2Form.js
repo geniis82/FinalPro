@@ -122,8 +122,11 @@ const Vehicle2Form = () => {
     console.log(parte);
 
     const save = async () => {
-
+        const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
+        const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
         axios.post(`${ENDPOINT_partes}/save.php`, {
+            dni,
+            token,
             ...parte
         })
             .then(res => {
@@ -160,7 +163,8 @@ const Vehicle2Form = () => {
         <ScrollView style={styles.container}>
             <Text style={{ fontSize: 40, marginLeft: '4%' }}>Vehiculo B</Text>
             <DropDownPicker
-                listMode='MODAL'
+                listMode='SCROLLVIEW'
+                placeholder='Seleccione un vehiculo'
                 open={open}
                 value={value}
                 items={vehicles}
@@ -169,6 +173,7 @@ const Vehicle2Form = () => {
                 setItems={setVehicles}
                 onChangeValue={handleDropDown}
                 style={{ marginLeft: '4%', marginTop: '4%', flex: 1, width: '90%' }}
+                dropDownContainerStyle={{ marginLeft: '4%', marginTop: '4%',  width: '89.5%' }}
             />
 
 

@@ -46,7 +46,7 @@ const ParteVehiculo1 = ({ parte, handleOnChange }) => {
 
     return (
         <View>
-            <Text style={{ fontSize: 40 }}>Vehiculo A</Text>
+            <Text style={{ fontSize: 40 ,marginLeft:'4%'}}>Vehiculo A</Text>
             <TextCustom label={'Matricula'} id={'matricula'} value={vehicle.label} onChange={handleOnChange} readOnly={true} />
             <TextCustom label={'Marca'} id={'marca'} value={vehicle?.options?.marca} onChange={handleOnChange} readOnly={true} />
             <TextCustom label={'Modelo'} id={'modelo'} value={vehicle?.options?.modelo} onChange={handleOnChange} readOnly={true} />

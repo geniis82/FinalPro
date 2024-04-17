@@ -22,10 +22,6 @@ const Draw = createDrawerNavigator();
 
 
 const MyDraws = () => {
-    const navigation = useNavigation()
-
-
-
 
 
     return (
@@ -43,7 +39,6 @@ const MyDraws = () => {
         }}>
             {ScreensPaths.map((item, index) => (
                 <Stack.Screen
-                    initialParams={{ initialRoute: "Cabecera" }}
                     name={item.name}
                     component={item.component}
                     options={{

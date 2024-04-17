@@ -75,11 +75,11 @@ const CambiarNombreYApellidos = () => {
         const idUser = await AsyncStorage.getItem(StorageKeys.USER_ID)
 
         axios.post(`${ENDPOINT_user}/setNewNameSurname.php`, {
-
+            dni,
+            token,
             id: idUser,
             name: user.name,
             surname: user.surname,
-
         })
             .then(res => {
                 const userData = res.data

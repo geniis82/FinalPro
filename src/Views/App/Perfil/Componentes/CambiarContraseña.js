@@ -73,9 +73,11 @@ const CambiarContraseña = () => {
     const handleGuardar = async () => {
         const idUser = await AsyncStorage.getItem(StorageKeys.USER_ID)
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
+        const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
         axios.post(`${ENDPOINT_user}/setNewPassword.php`, {
-            id: idUser,
+            token,
             dni,
+            id: idUser,
             oldPassword,
             newPassword,
         })

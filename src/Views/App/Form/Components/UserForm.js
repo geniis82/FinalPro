@@ -74,11 +74,11 @@ const UserForm = () => {
         <ScrollView style={styles.container}>
             <Text style={{ fontSize: 40, marginLeft: '4%' }}>Usuario A</Text>
 
-            <TextCustom label={'Name'} id={'name'} value={user.name} />
-            <TextCustom label={'Surname'} id={'surname'} value={user.surname} />
-            <TextCustom label={'Phone'} id={'tlf'} value={user.tlf} />
-            <TextCustom label={'Date Birth'} id={'dateBirth'} value={user.dateBirth} />
-            <TextCustom label={'Email'} id={'email'} value={user.email} />
+            <TextCustom label={'Nombre'} id={'name'} value={user.name} />
+            <TextCustom label={'Apellidos'} id={'surname'} value={user.surname} />
+            <TextCustom label={'Telefono'} id={'tlf'} value={user.tlf} />
+            <TextCustom label={'Fecha de nacimiento'} id={'dateBirth'} value={user.dateBirth} />
+            <TextCustom label={'Correo Electronico'} id={'email'} value={user.email} />
             <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={handleGoBack} style={styles.button}>
                     <Icon name='arrow-back-circle' size={55} style={styles.textButton}/>
