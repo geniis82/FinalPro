@@ -17,8 +17,7 @@ const ListaPartes = () => {
 
     const [selectedId, setSelectedId] = useState();
     const { navigate } = useNavigation();
-    const Stack = createStackNavigator();
-    const navigation = useNavigation()
+
 
 
     useFocusEffect(

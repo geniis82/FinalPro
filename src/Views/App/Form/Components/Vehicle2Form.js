@@ -11,12 +11,16 @@ import axios from 'axios';
 import TextCustom from '../../../../Components/TextCustom';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Vehicle2FormClient from './Vehicle2FormClient';
+import Vehicle2FormNoClient from './Vehicle2FormNoClient';
 
 
 const Vehicle2Form = () => {
 
     const route = useRoute();
     const { user2Id } = route.params;
+    const { flag1 } = route.params;
+    const { client2 } = route.params;
 
     const navigation = useNavigation()
 
@@ -29,14 +33,35 @@ const Vehicle2Form = () => {
     const [vehicleSec, setVehicleSec] = useState();
     const [parte, setParte] = useState({})
 
+    const [vehicle2, setVehcle2] = useState({})
+
+
 
     useFocusEffect(
         useCallback(() => {
-            fetchVehicle()
+            if (flag1) {
+                fetchVehicle()
+            } else {
+                cargarParte()
+            }
             setVehicleSec("")
             setPoliza("")
             setValue("")
+            setVehcle2({})
+            console.log(parte);
         }, []));
+
+
+    
+    const cargarParte = async () => {
+        const p = await AsyncStorage.getItem(StorageKeys.PARTE);
+        const storedParte = JSON.parse(p || '{}');
+        // console.log(p);
+        // console.log(user2Id);
+        setParte({...storedParte, ["client2"]: client2})
+        // setVehcle2({ ...vehicle2, [id]: value })
+        setLoaded(true)
+    }
 
     const fetchVehicle = async () => {
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
@@ -44,8 +69,8 @@ const Vehicle2Form = () => {
         const p = await AsyncStorage.getItem(StorageKeys.PARTE);
         const storedParte = JSON.parse(p || '{}');
         // console.log(p);
+        // console.log(user2Id);
         setParte(storedParte)
-
         // console.log(user2Id);
         axios.get(`${ENDPOINT_vehicles}/getVehiclesUserById.php`, {
             params: {
@@ -59,14 +84,14 @@ const Vehicle2Form = () => {
                 console.log(vehicleData);
                 if (vehicleData.status) {
                     const vec = vehicleData.vehicles
-                    const vehiculosConPoliza = []
-                    vec.map(function (item) {
-                        if (item.options.poliza_ids.length !== 0) {
-                            vehiculosConPoliza.push(item)
-                        }
-                    })
+                    // const vehiculosConPoliza = []
+                    // vec.map(function (item) {
+                    //     if (item.options.poliza_ids.length !== 0) {
+                    //         vehiculosConPoliza.push(item)
+                    //     }
+                    // })
                     // console.log(vehiculosConPoliza);
-                    setVehicles(vehiculosConPoliza)
+                    setVehicles(vec)
                 } else {
                     console.log("No se pudo obtener los datos de los vehiculos2");
                 }
@@ -100,14 +125,6 @@ const Vehicle2Form = () => {
             }).finally(() => setLoaded(true))
     }
 
-
-
-
-    // const handleOnChange = (e) => {
-    //     const { id, value } = e.target;
-    //     setVehicles({ ...vehicles, [id]: value })
-    //     setPoliza({ ...poliza, [id]: value })
-    // }
     if (!loaded) return <Loader />
 
     const handleDropDown = () => {
@@ -119,9 +136,22 @@ const Vehicle2Form = () => {
         // console.log(parte);
     }
 
-    console.log(parte);
+    const handleOnChange = (e) => {
+        const { id, value } = e.target;
+        setVehcle2({ ...vehicle2, [id]: value })
+        // console.log(vehicle2);
+    }
+
 
     const save = async () => {
+        if (!flag1) {
+            console.log(client2);
+            console.log(vehicle2);
+            const updatedParte = { ...parte, client2: client2, vehiculo2: vehicle2 };
+            console.log(updatedParte);
+            setParte(updatedParte);
+            await AsyncStorage.setItem(StorageKeys.PARTE, JSON.stringify(parte));
+        }
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
         axios.post(`${ENDPOINT_partes}/save.php`, {
@@ -155,54 +185,33 @@ const Vehicle2Form = () => {
     }
 
     const handleGoBack = () => {
-        navigation.goBack();
+        navigation.navigate("User2Form");
     };
 
 
     return (
-        <ScrollView style={styles.container}>
-            <Text style={{ fontSize: 40, marginLeft: '4%' }}>Vehiculo B</Text>
-            <DropDownPicker
-                listMode='SCROLLVIEW'
-                placeholder='Seleccione un vehiculo'
-                open={open}
-                value={value}
-                items={vehicles}
-                setOpen={setOpen}
-                setValue={setValue}
-                setItems={setVehicles}
-                onChangeValue={handleDropDown}
-                style={{ marginLeft: '4%', marginTop: '4%', flex: 1, width: '90%' }}
-                dropDownContainerStyle={{ marginLeft: '4%', marginTop: '4%',  width: '89.5%' }}
-            />
-
-
-            {vehicleSec &&
-                <View style={{ paddingTop: '4%' }}>
-                    <TextCustom label={'Matricula'} id={'matricula'} value={vehicleSec.label} />
-                    <TextCustom label={'Marca'} id={'marca'} value={vehicleSec.options.marca} />
-                    <TextCustom label={'Modelo'} id={'modelo'} value={vehicleSec.options.modelo} />
-                </View>
+        <View>
+            {flag1 ?
+                <Vehicle2FormClient
+                    handleDropDown={handleDropDown}
+                    handleGoBack={handleGoBack}
+                    open={open}
+                    poliza={poliza}
+                    save={save}
+                    setOpen={setOpen}
+                    setValue={setValue}
+                    setVehicles={setVehicles}
+                    value={value}
+                    vehicleSec={vehicleSec}
+                    vehicles={vehicles}
+                />
+                :
+                <Vehicle2FormNoClient
+                    handleGoBack={handleGoBack}
+                    client2={client2}
+                />
             }
-            {poliza &&
-                <View >
-                    <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} value={poliza.aseguradora_id[1]} />
-                    <TextCustom label={'Numero de poliza'} id={'name'} value={poliza.name} />
-
-                </View>
-            }
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={handleGoBack} style={styles.button}>
-                    <Icon name='arrow-back-circle' size={55} style={styles.textButton} />
-                    {/* <Text style={styles.textButton}>Atras</Text> */}
-                </TouchableOpacity>
-                <TouchableOpacity onPress={save} style={styles.button}>
-                    <Icon name='send' size={55} style={styles.textButton} />
-                    {/* <Text style={styles.textButton}>Siguiente</Text> */}
-                </TouchableOpacity>
-            </View>
-
-        </ScrollView>
+        </View>
     )
 
 }

@@ -7,13 +7,14 @@ import { StorageKeys } from '../../../../../utils/StorageKeys';
 import axios from 'axios';
 import { ENDPOINT_user } from '../../../../../utils/endpoints';
 import Loader from '../../../../Components/Loader';
-import DropDownPicker from 'react-native-dropdown-picker';
-import { SearchBar, Text } from 'react-native-elements';
+import { Button, Text } from 'react-native-elements';
 import TextCustom from '../../../../Components/TextCustom';
-import Vehicle2Form from './Vehicle2Form';
-import CheckBox from '@react-native-community/checkbox';
 import { ScrollView, TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
+import DatePicker from 'react-native-date-picker'
+import moment from 'moment'
+import User2FormClient from './User2FormClient';
+import User2FormNoClient from './User2FormNoClient';
 
 
 
@@ -28,25 +29,45 @@ const User2Form = () => {
     const [toggleCheckBox, setToggleCheckBox] = useState(false);
     const [user2Id, setUser2ID] = useState({})
     const [search, setSearch] = useState("")
+    const [flag, setFlag] = useState("0")
+    const [flag1, setFlag1] = useState(false)
+    const [user, setUser] = useState({})
+
+    const [client2, setClient2] = useState({})
+    const [dni, setDni] = useState("");
+    const [name, setName] = useState("");
+    const [surname, setSurname] = useState("");
+    const [telefono, setTelefono] = useState("");
+    const [date, setDate] = useState(new Date())
+    const [dateBirth, setDatebirth] = useState("");
+    const [email, setEmail] = useState("");
+
 
     const navigation = useNavigation()
 
     useFocusEffect(
         useCallback(() => {
             fetchUser()
+            // setClient2({})
             setValue("")
             setUserSec("")
+            setDni("")
+            setName("")
+            setSurname("")
+            setTelefono("")
+            setEmail("")
+            setDatebirth("")
         }, [])
     );
 
 
     const fetchUser = async () => {
+        setFlag("0")
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
-
         const p = await AsyncStorage.getItem(StorageKeys.PARTE);
         const storedParte = JSON.parse(p || '{}');
-        console.log(p);
+        // console.log(p);
         setParte(storedParte);
 
         axios.get(`${ENDPOINT_user}/getAllUsers.php`, {
@@ -81,20 +102,15 @@ const User2Form = () => {
     if (!loaded) return <Loader />
 
 
-    // const handleDropDown = () => {
-    //     const itemSelect = users.find(item => item.value === value)
-    //     setUserSec(itemSelect)
-    //     const updatedParte = { ...parte, client2: value };
-    //     setUser2ID(value)
-    //     setParte(updatedParte);
-    //     console.log(parte);
-    // }
-
     const handleSiguiente = async () => {
-        await AsyncStorage.setItem(StorageKeys.PARTE, JSON.stringify(parte));
-        console.log(parte);
-        console.log(user2Id);
-        navigation.navigate('Vehicle2Form', { user2Id });
+        console.log(flag);
+        if (+flag === 2) {
+            await AsyncStorage.setItem(StorageKeys.PARTE, JSON.stringify(parte));
+            navigation.navigate('Vehicle2Form', { user2Id, flag1: true });
+        } else {
+            console.log(client2);
+            navigation.navigate('Vehicle2Form', { user2Id, toggleCheckBox, client2 });
+        }
     }
 
     const handleGoBack = () => {
@@ -105,69 +121,52 @@ const User2Form = () => {
         setSearch(text);
     };
 
+    const handleOnChangeNoUser = (e) => {
+        const { id, value } = e.target;
+        setClient2({ ...client2, [id]: value })
+        // console.log(client2);
+    }
+
     const filterUser = () => {
         const user = users.find(item => item.options.dni === search);
-        // console.log(user);
+        console.log(user);
+
         if (user === undefined) {
-            Alert.alert('Error', 'El usuario introducido no es valido'), [
+            setFlag("1")
+            Alert.alert('Error', 'Usuario no encontrado'), [
                 {
                     text: 'Cancelar',
                     style: 'cancel'
                 },
             ]
         } else {
+            setFlag("2")
             setUserSec(user)
             setUser2ID(user.value)
             const updatedParte = { ...parte, client2: user.value };
             setParte(updatedParte);
         }
     }
-    const cleanFields = (value) => {
-        setUserSec(null)
-        setUser2ID({})
-        const updatedParte = { ...parte, client2: user2Id };
-        setParte(updatedParte);
-        if (!value) {
-            setToggleCheckBox(value)
-            // setUserSec({})
-        } else {
-            setSearch('')
-            // setUserSec(null)
-            setToggleCheckBox(value)
-        }
-    }
+
 
     return (
         <ScrollView style={styles.container}>
             <Text style={{ fontSize: 40, marginLeft: '4%' }}>Usuario B</Text>
-            <View style={styles.toggleView}>
-                <Switch
-                    trackColor={{ false: '#cdcdcd', true: '#cdcdcd' }}
-                    thumbColor={toggleCheckBox ? '#cfd965' : '#9a89c0'}
-                    ios_backgroundColor="#3e3e3e"
-                    onValueChange={(newValue) => cleanFields(newValue)}
-                    value={toggleCheckBox}
-                />
-                <Text style={{ fontSize: 16 }}>Pertenece a la Gestoria?</Text>
+            <View style={styles.searchBar}>
+                <TextInput style={styles.searchInput} value={search} onChangeText={handleOnChange} placeholder={"Buscar dni"} />
+                <TouchableOpacity style={styles.button} onPress={filterUser}>
+                    <Icon name='search-circle-sharp' size={45} style={styles.searchButton} />
+                </TouchableOpacity>
             </View>
-
-
-            {toggleCheckBox &&
-                <View style={styles.searchBar}>
-                    <TextInput style={styles.searchInput} value={search} onChangeText={handleOnChange} placeholder={"Buscar dni"} />
-                    {/* <TextCustom style value={search} id={'dniBus'} onChange={handleOnChange} placeholder={"Buscar dni"} /> */}
-                    <TouchableOpacity style={styles.button} onPress={filterUser}>
-                        <Icon name='search-circle-sharp' size={45} style={styles.searchButton} />
-                    </TouchableOpacity>
+            {+flag === 2 &&
+                <View>
+                    <User2FormClient handleOnChange={handleOnChange} userSec={userSec} search={search} filterUser={filterUser} />
                 </View>
             }
-            <View >
-                <TextCustom label={'Nombre'} id={'name'} value={userSec ? userSec.options.name : ''} placeholder={"Introduzca nombre"} readOnly={toggleCheckBox} />
-                <TextCustom label={'Apellidos'} id={'surname'} value={userSec ? userSec.options.surname : ''} placeholder={"Introduzca apellidos"} readOnly={toggleCheckBox} />
-                <TextCustom label={'Telefono'} id={'phone'} value={userSec ? userSec.options.tlf : ''} placeholder={"Introduzca telefono"} readOnly={toggleCheckBox} />
-                <TextCustom label={'Fecha de Nacimiento'} id={'dateBirth'} value={userSec ? userSec.options.dateBirth : ''} placeholder={"Introduzca fecha de nacimiento"} readOnly={toggleCheckBox} />
-                <TextCustom label={'Correo Electronico'} id={'email'} value={userSec ? userSec.options.email : ''} placeholder={"Introduzca correo electronico"} readOnly={toggleCheckBox} />
-            </View>
+            {+flag === 1 &&
+                <User2FormNoClient handleOnChangeNoUser={handleOnChangeNoUser} />
+            }
+
             <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={handleGoBack} style={styles.button}>
                     <Icon name='arrow-back-circle' size={55} style={styles.textButton} />
@@ -177,7 +176,6 @@ const User2Form = () => {
                 </TouchableOpacity>
             </View>
         </ScrollView>
-
     )
 
 }

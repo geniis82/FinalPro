@@ -48,7 +48,7 @@ const VehicleForm = () => {
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
         const p = await AsyncStorage.getItem(StorageKeys.PARTE);
         const storedParte = JSON.parse(p || '{}');
-        console.log(p);
+        // console.log(p);
         setParte(storedParte);
         axios.get(`${ENDPOINT_vehicles}/getVehiclesByUser.php`, {
             params: {
@@ -113,7 +113,7 @@ const VehicleForm = () => {
         const updatedParte = { ...parte, vehiculo: value };
         setParte(updatedParte);
         fetchAseguradora()
-        console.log(parte);
+        // console.log(parte);
     }
 
     const handleSiguiente = async () => {

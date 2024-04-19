@@ -9,6 +9,7 @@ import { StorageKeys } from '../../../../../utils/StorageKeys';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import moment from 'moment';
 
 
 const UserForm = () => {
@@ -29,12 +30,9 @@ const UserForm = () => {
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
         const p = await AsyncStorage.getItem(StorageKeys.PARTE)
-
         const storedParte = JSON.parse(p || '{}');
-        console.log(p);
+        // console.log(p);
         setParte(storedParte);
-
-
         axios.get(`${ENDPOINT_user}/getUser.php`, {
             params: {
                 dni,
@@ -62,7 +60,7 @@ const UserForm = () => {
 
     const handleSiguiente = async () => {
         await AsyncStorage.setItem(StorageKeys.PARTE, JSON.stringify(parte));
-        console.log(parte);
+        // console.log(parte);
         navigation.navigate('VehicleForm');
     };
     const handleGoBack = () => {
@@ -77,7 +75,7 @@ const UserForm = () => {
             <TextCustom label={'Nombre'} id={'name'} value={user.name} />
             <TextCustom label={'Apellidos'} id={'surname'} value={user.surname} />
             <TextCustom label={'Telefono'} id={'tlf'} value={user.tlf} />
-            <TextCustom label={'Fecha de nacimiento'} id={'dateBirth'} value={user.dateBirth} />
+            <TextCustom label={'Fecha de nacimiento'} id={'dateBirth'} value={moment(user.dateBirth).format("DD-MM-YYYY")} />
             <TextCustom label={'Correo Electronico'} id={'email'} value={user.email} />
             <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={handleGoBack} style={styles.button}>

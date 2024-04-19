@@ -19,7 +19,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 const CabeceraForm = () => {
 
     const navigation = useNavigation()
-    // const [parte, setParte] = useState({})
 
     const [parte, setParte] = useState({
         dataParte: moment().format('YYYY-MM-DD'), // Incluye la fecha del parte en el estado inicial
@@ -67,7 +66,7 @@ const CabeceraForm = () => {
 
     return (
         <ScrollView style={styles.container}>
-            <TextCustom label={'Fecha del Parte'} id={'dataParte'} value={parte.dataParte} onChange={handleOnChange} />
+            <TextCustom label={'Fecha del Parte'} id={'dataParte'} value={moment().format('DD-MM-YYYY')} onChange={handleOnChange} />
             <TextCustom label={'Localidad'} id={'location'} onChange={handleOnChange} value={parte.location} />
             <TextCustom label={'Direccion'} id={'addres'} onChange={handleOnChange} value={parte.addres} />
             <TextCustom
