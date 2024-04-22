@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 
 const User2FormClient = ({ userSec }) => {
-    console.log(userSec);
+    
     return (
         <View>
             <View style={styles.searchBar}>

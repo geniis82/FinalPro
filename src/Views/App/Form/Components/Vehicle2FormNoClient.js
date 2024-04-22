@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback,  useState } from 'react'
 
 import { View, StyleSheet, Alert, Text } from 'react-native';
 
@@ -9,8 +9,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StorageKeys } from '../../../../../utils/StorageKeys';
 import { ENDPOINT_partes } from '../../../../../utils/endpoints';
 import axios from 'axios';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+import Loader from '../../../../Components/Loader';
 
-const Vehicle2FormNoClient = ({ handleGoBack, client2 }) => {
+const Vehicle2FormNoClient = () => {
+
+    const route = useRoute();
+    const { client2 } = route.params;
 
     const [parte, setParte] = useState({})
 
@@ -22,16 +27,23 @@ const Vehicle2FormNoClient = ({ handleGoBack, client2 }) => {
     const [numPoliza, setNumPoliza] = useState("")
     const [loaded, setLoaded] = useState(false);
 
-    useEffect(()=>{
-        cargarParte()
-    },[])
+    const navigation = useNavigation()
+
+    useFocusEffect(
+        useCallback(() => {
+            cargarParte()
+            setMarca("")
+            setMatricula("")
+            setModelo("")
+            setAseguradora("")
+            setNumPoliza("")
+        }, []));
 
 
     const cargarParte = async () => {
         const p = await AsyncStorage.getItem(StorageKeys.PARTE);
         const storedParte = JSON.parse(p || '{}');
-        setParte(storedParte)
-        
+        setParte({ ...storedParte, ["client2"]: client2 })
         setLoaded(true)
     }
 
@@ -50,7 +62,7 @@ const Vehicle2FormNoClient = ({ handleGoBack, client2 }) => {
                 const parteData = res.data
                 console.log(parteData);
                 if (parteData.status) {
-                    Alert.alert('Parte Eniado', 'El parte se ha enviado correctamente', [
+                    Alert.alert('Parte Enviado', 'El parte se ha enviado correctamente', [
                         {
                             text: 'Aceptar',
                             onPress: () => navigation.navigate("Mis Partes"),
@@ -74,9 +86,14 @@ const Vehicle2FormNoClient = ({ handleGoBack, client2 }) => {
     const handleOnChange = (e) => {
         const { id, value } = e.target;
         setVehcle2({ ...vehicle2, [id]: value })
-        console.log(parte);
+        // console.log(parte);
     }
 
+    const handleGoBack = () => {
+        navigation.navigate("User2Form");
+    };
+
+    // if (!loaded) return <Loader />
 
     return (
         <ScrollView style={styles.container}>

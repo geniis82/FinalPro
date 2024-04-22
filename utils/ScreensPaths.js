@@ -6,6 +6,7 @@ import Partes from "../src/Views/App/Partes/Partes";
 import Perfil from "../src/Views/App/Perfil/Perfil";
 import InfoPolizas from "../src/Views/App/Polizas/InfoPolizas";
 import Polizas from "../src/Views/App/Polizas/Polizas";
+import UserQRCode from "../src/Views/App/QRCode/QRCode";
 import { Paths } from "./paths";
 export const ScreensPaths = [
 
@@ -27,6 +28,12 @@ export const ScreensPaths = [
         name: 'Polizas',
         iconName:'list'
 
+    },
+    {
+        title: 'QRCode',
+        component: UserQRCode,
+        name: 'QRCode',
+        iconName:'qr-code-outline'
     },
     {
         title: 'Perfil',

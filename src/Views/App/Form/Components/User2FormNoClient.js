@@ -1,18 +1,19 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
 import { View, StyleSheet, Alert, Switch } from 'react-native';
-import { Button, Text } from 'react-native-elements';
+import { Button,  Text } from 'react-native-elements';
 import TextCustom from '../../../../Components/TextCustom';
-
+import Icon from 'react-native-vector-icons/Ionicons';
 import DatePicker from 'react-native-date-picker'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import moment from 'moment'
+import { useNavigation } from '@react-navigation/native';
 
 
-const User2FormNoClient = ({ handleOnChangeNoUser }) => {
+const User2FormNoClient = () => {
 
-
+    const navigation = useNavigation()
     const [open, setOpen] = useState(false)
-    const [client, setClient] = useState({})
     const [dni, setDni] = useState("");
     const [name, setName] = useState("");
     const [surname, setSurname] = useState("");
@@ -20,6 +21,21 @@ const User2FormNoClient = ({ handleOnChangeNoUser }) => {
     const [date, setDate] = useState(new Date())
     const [dateBirth, setDatebirth] = useState("");
     const [email, setEmail] = useState("");
+    const [client2, setClient2] = useState({})
+
+    const handleOnChangeNoUser = (e) => {
+        const { id, value } = e.target;
+        setClient2({ ...client2, [id]: value })
+        console.log(client2);
+    }
+
+    const handleGoBack = () => {
+        navigation.goBack();
+    };
+
+    const handleSiguiente = async () => {
+        navigation.navigate('Vehicle2Form', { client2 });
+    }
 
     return (
         <View >
@@ -42,6 +58,7 @@ const User2FormNoClient = ({ handleOnChangeNoUser }) => {
                 mode='date'
                 open={open}
                 date={date}
+                
                 // id='dateBirth'
                 // onDateChange={handleOnChange}
                 onConfirm={(date) => {
@@ -54,8 +71,16 @@ const User2FormNoClient = ({ handleOnChangeNoUser }) => {
                     setOpen(false)
                 }}
             />
-            <TextCustom label={'Fecha de Nacimiento'} id={'dateBirth'} value={dateBirth } placeholder={"Introduzca fecha de nacimiento"} onChange={handleOnChangeNoUser} />
+            <TextCustom label={'Fecha de Nacimiento'} id={'dateBirth'} value={dateBirth} placeholder={"Introduzca fecha de nacimiento"} onChange={handleOnChangeNoUser} />
             <TextCustom label={'Correo Electronico'} id={'email'} value={email} placeholder={"Introduzca correo electronico"} onChange={handleOnChangeNoUser} />
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity onPress={handleGoBack} style={styles.button}>
+                    <Icon name='arrow-back-circle' size={55} style={styles.textButton} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
+                    <Icon name='arrow-forward-circle' size={55} style={styles.textButton} />
+                </TouchableOpacity>
+            </View>
         </View>
     )
 }

@@ -1,19 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { Text, View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { ScrollView } from 'react-native';
-import UserForm from './Components/UserForm';
-import VehicleForm from './Components/VehicleForm';
-import CabeceraForm from './Components/CabeceraForm';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { StorageKeys } from '../../../../utils/StorageKeys';
-import axios from 'axios';
-import { ENDPOINT_partes } from '../../../../utils/endpoints';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import { useFocusEffect } from "@react-navigation/native";
-import moment from 'moment';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import React, { useCallback } from 'react';
+import { StyleSheet } from 'react-native';
+import CabeceraForm from './Components/CabeceraForm';
 import User2Form from './Components/User2Form';
+import UserForm from './Components/UserForm';
 import Vehicle2Form from './Components/Vehicle2Form';
+import VehicleForm from './Components/VehicleForm';
+import QRScann from './Components/QRScann';
 
 const Form = () => {
     const Stack = createStackNavigator();
@@ -39,6 +33,9 @@ const Form = () => {
             </Stack.Screen>
             <Stack.Screen name='User2Form' options={{headerShown: false}}>
                 {() => <User2Form />}
+            </Stack.Screen>
+            <Stack.Screen name='QRScann' options={{headerShown: false}}>
+                {() => <QRScann />}
             </Stack.Screen>
             <Stack.Screen name='Vehicle2Form' options={{headerShown: false}}>
                 {() => <Vehicle2Form />}

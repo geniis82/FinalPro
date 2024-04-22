@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 
 import { View, StyleSheet, Alert, Switch } from 'react-native';
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
@@ -7,14 +7,15 @@ import { StorageKeys } from '../../../../../utils/StorageKeys';
 import axios from 'axios';
 import { ENDPOINT_user } from '../../../../../utils/endpoints';
 import Loader from '../../../../Components/Loader';
-import { Button, Text } from 'react-native-elements';
-import TextCustom from '../../../../Components/TextCustom';
+import { Text } from 'react-native-elements';
 import { ScrollView, TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
-import DatePicker from 'react-native-date-picker'
-import moment from 'moment'
 import User2FormClient from './User2FormClient';
 import User2FormNoClient from './User2FormNoClient';
+import OpenCamera from '../../../../../utils/OpenCamera';
+
+
+
 
 
 
@@ -23,10 +24,8 @@ const User2Form = () => {
     const [loaded, setLoaded] = useState(false);
     const [parte, setParte] = useState({})
     const [users, setUsers] = useState([])
-    const [open, setOpen] = useState(false)
     const [value, setValue] = useState(null);
     const [userSec, setUserSec] = useState({});
-    const [toggleCheckBox, setToggleCheckBox] = useState(false);
     const [user2Id, setUser2ID] = useState({})
     const [search, setSearch] = useState("")
     const [flag, setFlag] = useState("0")
@@ -42,13 +41,13 @@ const User2Form = () => {
     const [dateBirth, setDatebirth] = useState("");
     const [email, setEmail] = useState("");
 
+    const navigation = useNavigation();
 
-    const navigation = useNavigation()
+
 
     useFocusEffect(
         useCallback(() => {
             fetchUser()
-            // setClient2({})
             setValue("")
             setUserSec("")
             setDni("")
@@ -57,6 +56,7 @@ const User2Form = () => {
             setTelefono("")
             setEmail("")
             setDatebirth("")
+            setLoaded(true)
         }, [])
     );
 
@@ -67,7 +67,6 @@ const User2Form = () => {
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
         const p = await AsyncStorage.getItem(StorageKeys.PARTE);
         const storedParte = JSON.parse(p || '{}');
-        // console.log(p);
         setParte(storedParte);
 
         axios.get(`${ENDPOINT_user}/getAllUsers.php`, {
@@ -102,34 +101,34 @@ const User2Form = () => {
     if (!loaded) return <Loader />
 
 
-    const handleSiguiente = async () => {
-        console.log(flag);
-        if (+flag === 2) {
-            await AsyncStorage.setItem(StorageKeys.PARTE, JSON.stringify(parte));
-            navigation.navigate('Vehicle2Form', { user2Id, flag1: true });
-        } else {
-            console.log(client2);
-            navigation.navigate('Vehicle2Form', { user2Id, toggleCheckBox, client2 });
-        }
-    }
+    // const handleSiguiente = async () => {
+    //     console.log(flag);
+    //     if (+flag === 2) {
+    //         await AsyncStorage.setItem(StorageKeys.PARTE, JSON.stringify(parte));
+    //         navigation.navigate('Vehicle2Form', { user2Id, flag1: true });
+    //     } else {
+    //         console.log(client2);
+    //         navigation.navigate('Vehicle2Form', { user2Id,  client2 });
+    //     }
+    // }
 
-    const handleGoBack = () => {
-        navigation.goBack();
-    };
+    // const handleGoBack = () => {
+    //     navigation.goBack();
+    // };
 
     const handleOnChange = (text) => {
         setSearch(text);
     };
 
-    const handleOnChangeNoUser = (e) => {
-        const { id, value } = e.target;
-        setClient2({ ...client2, [id]: value })
-        // console.log(client2);
-    }
+    // const handleOnChangeNoUser = (e) => {
+    //     const { id, value } = e.target;
+    //     setClient2({ ...client2, [id]: value })
+    //     console.log(client2);
+    // }
 
     const filterUser = () => {
+        // console.log(search);
         const user = users.find(item => item.options.dni === search);
-        console.log(user);
 
         if (user === undefined) {
             setFlag("1")
@@ -149,6 +148,12 @@ const User2Form = () => {
     }
 
 
+
+    const scannerQr = () => {
+        navigation.navigate("QRScann")
+    }
+
+
     return (
         <ScrollView style={styles.container}>
             <Text style={{ fontSize: 40, marginLeft: '4%' }}>Usuario B</Text>
@@ -157,24 +162,27 @@ const User2Form = () => {
                 <TouchableOpacity style={styles.button} onPress={filterUser}>
                     <Icon name='search-circle-sharp' size={45} style={styles.searchButton} />
                 </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={scannerQr}>
+                    <Icon name='search-circle-sharp' size={45} style={styles.searchButton} />
+                </TouchableOpacity>
             </View>
             {+flag === 2 &&
                 <View>
-                    <User2FormClient handleOnChange={handleOnChange} userSec={userSec} search={search} filterUser={filterUser} />
+                    <User2FormClient userSec={userSec} />
                 </View>
             }
             {+flag === 1 &&
-                <User2FormNoClient handleOnChangeNoUser={handleOnChangeNoUser} />
+                <User2FormNoClient />
             }
 
-            <View style={styles.buttonContainer}>
+            {/* <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={handleGoBack} style={styles.button}>
                     <Icon name='arrow-back-circle' size={55} style={styles.textButton} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
                     <Icon name='arrow-forward-circle' size={55} style={styles.textButton} />
                 </TouchableOpacity>
-            </View>
+            </View> */}
         </ScrollView>
     )
 
@@ -214,10 +222,9 @@ const styles = StyleSheet.create({
     toggleView: {
         flexDirection: 'row',
         margin: '4%',
-
     },
     searchBar: {
-        flexDirection: 'row',
+        // flexDirection: 'row',
         justifyContent: 'space-between',
         alignContent: 'center',
         padding: '3%',

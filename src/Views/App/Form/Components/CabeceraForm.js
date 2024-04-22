@@ -75,7 +75,8 @@ const CabeceraForm = () => {
                 value={parte.descripcion}
                 onChange={handleOnChange}
                 multiline={true}
-                num={10}
+                num={8}
+                
             />
             <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
                 <Icon name='arrow-forward-circle' size={55}  style={styles.textButton} />
@@ -88,7 +89,7 @@ const CabeceraForm = () => {
 const styles = StyleSheet.create({
     container: {
         paddingTop: '5%',
-        paddingBottom: '5%'
+        paddingBottom: '5%',
     },
     buttonContainer: {
         flexDirection: 'row',
@@ -98,8 +99,11 @@ const styles = StyleSheet.create({
 
     },
     button: {
-        padding: '4%',
-
+        paddingBottom: '4%',
+        // backgroundColor:'red',
+        marginLeft:'40%',
+        marginRight:'40%',
+        marginTop:'4%'
     },
     textButton: {
         textAlign: 'center',
