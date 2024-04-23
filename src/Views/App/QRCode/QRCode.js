@@ -5,6 +5,10 @@ import { StorageKeys } from '../../../../utils/StorageKeys';
 import { ENDPOINT_user } from '../../../../utils/endpoints';
 import axios from 'axios';
 import QRCode from 'react-native-qrcode-svg'
+import Loader from '../../../Components/Loader';
+import { StyleSheet, View } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 
 const UserQRCode = () => {
@@ -18,7 +22,6 @@ const UserQRCode = () => {
             fetchUser()
         }, [])
     );
-
 
     const fetchUser = async () => {
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
@@ -43,13 +46,25 @@ const UserQRCode = () => {
             }).finally(() => setLoaded(true))
     }
 
+    if (!loaded) return <Loader />
+
     return (
-        <QRCode
-            value={JSON.stringify(user)}
-            size={250}
-        />
+        <View style={styles.container}>
+            <QRCode
+                value={JSON.stringify(user)}
+                size={250}
+            />
+        </View>
     )
 
 }
 
 export default UserQRCode
+
+const styles = StyleSheet.create({
+    container: {
+        padding:'17%',
+        height:'100%',
+        // backgroundColor:'red',
+    },
+});

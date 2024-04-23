@@ -13,7 +13,7 @@ import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/nativ
 const Vehicle2FormClient = () => {
 
     const route = useRoute();
-    const { user2Id } = route.params;
+    const { userSec } = route.params;
 
     const navigation = useNavigation()
 
@@ -51,7 +51,7 @@ const Vehicle2FormClient = () => {
             params: {
                 dni,
                 token,
-                id: user2Id
+                id: userSec.value
             }
         })
             .then(res => {
@@ -92,7 +92,11 @@ const Vehicle2FormClient = () => {
             }).finally(() => setLoaded(true))
     }
 
+    const cleanScan = async () => {
+        await AsyncStorage.removeItem(StorageKeys.DNI_SCANNED)
+    }
     const save = async () => {
+        console.log(parte);
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
         axios.post(`${ENDPOINT_partes}/save.php`, {
@@ -110,7 +114,8 @@ const Vehicle2FormClient = () => {
                             onPress: () => navigation.navigate("Mis Partes"),
                             style: 'cancel',
                         },
-                    ]);
+                    ])
+                    cleanScan();
                 } else {
                     Alert.alert('Error', 'Introduzca todos los campos', [
                         {

@@ -17,25 +17,28 @@ import Vehicle2FormNoClient from './Vehicle2FormNoClient';
 
 const Vehicle2Form = () => {
 
-    const route = useRoute();
-    const { user2Id } = route.params;
-    const { flag1 } = route.params;
+    const route = useRoute()
     const { client2 } = route.params;
+    const { userSec } = route.params;
+    const { flag } = route.params
 
     const [loaded, setLoaded] = useState(true);
 
 
+    // console.log(flag);
 
     if (!loaded) return <Loader />
 
 
     return (
         <View>
-            {flag1 ?
+            {+flag === 2 &&
                 <Vehicle2FormClient />
-                :
-                <Vehicle2FormNoClient/>
             }
+            {+flag === 1 &&
+                <Vehicle2FormNoClient />
+            }
+
         </View>
     )
 

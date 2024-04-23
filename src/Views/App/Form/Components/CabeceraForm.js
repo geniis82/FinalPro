@@ -40,6 +40,7 @@ const CabeceraForm = () => {
 
     const cleanParte = async () => {
         await AsyncStorage.removeItem(StorageKeys.PARTE)
+        await AsyncStorage.removeItem(StorageKeys.DNI_SCANNED)
         setParte(prevParte => ({
             ...prevParte,
             location: '',
@@ -80,7 +81,6 @@ const CabeceraForm = () => {
             />
             <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
                 <Icon name='arrow-forward-circle' size={55}  style={styles.textButton} />
-                {/* <Text style={styles.textButton}>Siguiente</Text> */}
             </TouchableOpacity>
         </ScrollView>
     )

@@ -1,7 +1,7 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
-import { View, StyleSheet, Alert, Switch } from 'react-native';
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { View, StyleSheet, Alert, Switch, PermissionsAndroid } from 'react-native';
+import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StorageKeys } from '../../../../../utils/StorageKeys';
 import axios from 'axios';
@@ -10,17 +10,16 @@ import Loader from '../../../../Components/Loader';
 import { Text } from 'react-native-elements';
 import { ScrollView, TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import User2FormClient from './User2FormClient';
 import User2FormNoClient from './User2FormNoClient';
-import OpenCamera from '../../../../../utils/OpenCamera';
-
-
-
 
 
 
 const User2Form = () => {
 
+
+    const [acceptedPermission, setAcceptedPermissions] = useState(false);
     const [loaded, setLoaded] = useState(false);
     const [parte, setParte] = useState({})
     const [users, setUsers] = useState([])
@@ -29,9 +28,8 @@ const User2Form = () => {
     const [user2Id, setUser2ID] = useState({})
     const [search, setSearch] = useState("")
     const [flag, setFlag] = useState("0")
-    const [flag1, setFlag1] = useState(false)
-    const [user, setUser] = useState({})
 
+    const [dniScanned, setDniScanned] = useState("")
     const [client2, setClient2] = useState({})
     const [dni, setDni] = useState("");
     const [name, setName] = useState("");
@@ -48,6 +46,8 @@ const User2Form = () => {
     useFocusEffect(
         useCallback(() => {
             fetchUser()
+            cleanScan()
+            // setSearch(dniScanned)
             setValue("")
             setUserSec("")
             setDni("")
@@ -61,8 +61,22 @@ const User2Form = () => {
     );
 
 
+    useEffect(() => {
+        if (dniScanned) {
+            filterUser(dniScanned);
+        }
+    }, [dniScanned]);
+
+
+    const cleanScan = async () => {
+        await AsyncStorage.removeItem(StorageKeys.DNI_SCANNED)
+    }
+
+
     const fetchUser = async () => {
         setFlag("0")
+        const dniScan = await AsyncStorage.getItem(StorageKeys.DNI_SCANNED)
+        setDniScanned(dniScan)
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
         const p = await AsyncStorage.getItem(StorageKeys.PARTE);
@@ -77,7 +91,6 @@ const User2Form = () => {
         })
             .then(res => {
                 const usersData = res.data
-                // console.log(usersData);
                 if (usersData.status) {
                     const usersWithOutuser1 = []
                     const vec = usersData.users
@@ -87,7 +100,6 @@ const User2Form = () => {
                         }
                     })
                     setUsers(usersWithOutuser1)
-                    // console.log(usersWithOutuser1);
                 } else {
                     console.log('no se pudo obtener los datos de los usuarios2');
                 }
@@ -100,56 +112,51 @@ const User2Form = () => {
 
     if (!loaded) return <Loader />
 
-
-    // const handleSiguiente = async () => {
-    //     console.log(flag);
-    //     if (+flag === 2) {
-    //         await AsyncStorage.setItem(StorageKeys.PARTE, JSON.stringify(parte));
-    //         navigation.navigate('Vehicle2Form', { user2Id, flag1: true });
-    //     } else {
-    //         console.log(client2);
-    //         navigation.navigate('Vehicle2Form', { user2Id,  client2 });
-    //     }
-    // }
-
-    // const handleGoBack = () => {
-    //     navigation.goBack();
-    // };
-
     const handleOnChange = (text) => {
         setSearch(text);
+        // setSearch(dniScanned)
     };
 
-    // const handleOnChangeNoUser = (e) => {
-    //     const { id, value } = e.target;
-    //     setClient2({ ...client2, [id]: value })
-    //     console.log(client2);
-    // }
-
     const filterUser = () => {
-        // console.log(search);
-        const user = users.find(item => item.options.dni === search);
-
+        if (dniScanned !== null) {
+            setSearch(dniScanned);
+        }
+        const user = users.find((item) => item.options.dni === search);
         if (user === undefined) {
-            setFlag("1")
-            Alert.alert('Error', 'Usuario no encontrado'), [
+            setFlag('1');
+            Alert.alert('Error', 'Usuario no encontrado', [
                 {
                     text: 'Cancelar',
-                    style: 'cancel'
+                    style: 'cancel',
                 },
-            ]
+            ]);
         } else {
-            setFlag("2")
-            setUserSec(user)
-            setUser2ID(user.value)
+            setFlag('2');
+            setUserSec(user);
+            setUser2ID(user.value);
             const updatedParte = { ...parte, client2: user.value };
             setParte(updatedParte);
         }
-    }
+    };
+
+    const requestCameraPermissions = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.CAMERA
+            );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                setAcceptedPermissions(true);
+            } else {
+                console.log('Permiso denegado');
+            }
+        } catch (err) {
+            console.error('Error al solicitar permisos:', err);
+        }
+    };
 
 
-
-    const scannerQr = () => {
+    const scannerQr = async () => {
+        await requestCameraPermissions()
         navigation.navigate("QRScann")
     }
 
@@ -159,30 +166,21 @@ const User2Form = () => {
             <Text style={{ fontSize: 40, marginLeft: '4%' }}>Usuario B</Text>
             <View style={styles.searchBar}>
                 <TextInput style={styles.searchInput} value={search} onChangeText={handleOnChange} placeholder={"Buscar dni"} />
-                <TouchableOpacity style={styles.button} onPress={filterUser}>
-                    <Icon name='search-circle-sharp' size={45} style={styles.searchButton} />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={scannerQr}>
-                    <Icon name='search-circle-sharp' size={45} style={styles.searchButton} />
-                </TouchableOpacity>
+                <View style={styles.toggleView}>
+                    <TouchableOpacity style={styles.button} onPress={filterUser}>
+                        <Icon name='search-circle-sharp' size={48} style={styles.searchButton} />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.button1} onPress={scannerQr}>
+                        <MaterialCommunityIcons name='qrcode-scan' size={40} style={styles.searchButton} />
+                    </TouchableOpacity>
+                </View>
             </View>
             {+flag === 2 &&
-                <View>
-                    <User2FormClient userSec={userSec} />
-                </View>
+                <User2FormClient userSec={userSec} flag={flag} parte={parte} />
             }
             {+flag === 1 &&
-                <User2FormNoClient />
+                <User2FormNoClient flag={flag} />
             }
-
-            {/* <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={handleGoBack} style={styles.button}>
-                    <Icon name='arrow-back-circle' size={55} style={styles.textButton} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
-                    <Icon name='arrow-forward-circle' size={55} style={styles.textButton} />
-                </TouchableOpacity>
-            </View> */}
         </ScrollView>
     )
 
@@ -199,36 +197,40 @@ const styles = StyleSheet.create({
         marginTop: '6%',
         marginBottom: '25%',
     },
-    button: {
-        padding: '4%',
-    },
-    textButton: {
-        textAlign: 'center',
-        color: '#9a89c0',
-        marginTop: '5%',
-    },
     searchInput: {
-        marginLeft: '3%',
         borderWidth: 1,
         paddingStart: '5%',
         borderColor: 'black',
         borderRadius: 15,
-        width: '80%'
+        width: '65%'
     },
     searchButton: {
         color: '#9a89c0',
         width: '70%'
     },
+    button: {
+        // backgroundColor:'blue',
+        width: '150%'
+    },
+    button1: {
+        // backgroundColor:'blue',
+        width: '150%',
+        paddingTop: '8%'
+    },
     toggleView: {
         flexDirection: 'row',
-        margin: '4%',
+        width: '30%',
+        // backgroundColor:'yellow',
+        justifyContent: 'space-between'
+
     },
     searchBar: {
-        // flexDirection: 'row',
+        flexDirection: 'row',
         justifyContent: 'space-between',
-        alignContent: 'center',
-        padding: '3%',
-        borderRadius: 100
+        alignContent: 'space-between',
+        padding: 20,
+        borderRadius: 100,
+        // backgroundColor: 'green'
     }
 });
 

@@ -10,7 +10,7 @@ import moment from 'moment'
 import { useNavigation } from '@react-navigation/native';
 
 
-const User2FormNoClient = () => {
+const User2FormNoClient = ({flag}) => {
 
     const navigation = useNavigation()
     const [open, setOpen] = useState(false)
@@ -34,7 +34,7 @@ const User2FormNoClient = () => {
     };
 
     const handleSiguiente = async () => {
-        navigation.navigate('Vehicle2Form', { client2 });
+        navigation.navigate('Vehicle2Form', { client2,flag });
     }
 
     return (

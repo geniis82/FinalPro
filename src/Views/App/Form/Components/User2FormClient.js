@@ -4,13 +4,27 @@ import { View, StyleSheet, Alert, Switch, Text } from 'react-native';
 import TextCustom from '../../../../Components/TextCustom';
 import { ScrollView, TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StorageKeys } from '../../../../../utils/StorageKeys';
 
 
 
-const User2FormClient = ({ userSec }) => {
-    
+const User2FormClient = ({ userSec,flag,parte }) => {
+
+    const navigation = useNavigation()
+
+    const handleSiguiente = async () => {
+        await AsyncStorage.setItem(StorageKeys.PARTE,JSON.stringify(parte))
+        navigation.navigate('Vehicle2Form',{userSec,flag});
+    }
+
+    const handleGoBack = async () => {
+        await AsyncStorage.removeItem(StorageKeys.DNI_SCANNED)
+        navigation.goBack();
+    };
     return (
-        <View>
+        <ScrollView>
             <View style={styles.searchBar}>
                 <Text style={{ fontSize: 16 }}>Pertenece a la Gestoria?</Text>
                 <Switch
@@ -27,14 +41,37 @@ const User2FormClient = ({ userSec }) => {
                 <TextCustom label={'Fecha de Nacimiento'} id={'dateBirth'} value={userSec ? userSec.options.dateBirth : ''} placeholder={"Introduzca fecha de nacimiento"} readOnly={true} />
                 <TextCustom label={'Correo Electronico'} id={'email'} value={userSec ? userSec.options.email : ''} placeholder={"Introduzca correo electronico"} readOnly={true} />
             </View>
-        </View>
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity onPress={handleGoBack} style={styles.button}>
+                    <Icon name='arrow-back-circle' size={55} style={styles.textButton} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
+                    <Icon name='arrow-forward-circle' size={55} style={styles.textButton} />
+                </TouchableOpacity>
+            </View>
+        </ScrollView>
     )
 }
 export default User2FormClient
 
 const styles = StyleSheet.create({
+    container: {
+        paddingTop: '5%',
+        paddingBottom: '5%'
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginTop: '6%',
+        marginBottom: '25%',
+    },
     button: {
         padding: '4%',
+    },
+    textButton: {
+        textAlign: 'center',
+        color: '#9a89c0',
+        marginTop: '5%',
     },
     searchInput: {
         marginLeft: '3%',
@@ -47,6 +84,11 @@ const styles = StyleSheet.create({
     searchButton: {
         color: '#9a89c0',
         width: '70%'
+    },
+    toggleView: {
+        flexDirection: 'row',
+        margin: '4%',
+
     },
     searchBar: {
         flexDirection: 'row',
