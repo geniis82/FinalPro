@@ -7,11 +7,7 @@ import { Text, View, StyleSheet } from 'react-native';
 import TextCustom from '../../../../Components/TextCustom';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { StorageKeys } from '../../../../../utils/StorageKeys';
-
-
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import User2Form from './User2Form';
-import Vehicle2Form from './Vehicle2Form';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { setParteOnAsyncStorage } from '../../../../../utils/GeneralFunctions';
 
@@ -29,10 +25,6 @@ const VehicleForm = () => {
     const [parte, setParte] = useState({})
     const [loaded, setLoaded] = useState(false);
 
-
-    // useEffect(() => {
-    //     fetchVehicle()
-    // }, [])
 
     useFocusEffect(
         useCallback(() => {
@@ -58,8 +50,10 @@ const VehicleForm = () => {
         })
             .then(res => {
                 const vehicleData = res.data
+                console.log(vehicleData);
                 if (vehicleData.status) {
                     const vec = vehicleData.vehicles
+                    console.log(vec);
                     const vehiculosConPoliza = []
                     vec.map(function (item) {
                         if (item.options.poliza_ids.length !== 0) {
@@ -89,7 +83,6 @@ const VehicleForm = () => {
             .then(res => {
                 const polizaData = res.data
                 if (polizaData.status) {
-                    // console.log(polizaData.poliza);
                     setPoliza(polizaData.poliza)
                 } else {
                     // console.log("No se pudo obtener los datos de las polizas");
@@ -100,11 +93,6 @@ const VehicleForm = () => {
             }).finally(() => setLoaded(true))
     }
 
-    // const handleOnChange = (e) => {
-    //     const { id, value } = e.target;
-    //     setVehicles({ ...vehicles, [id]: value })
-    //     setPoliza({ ...poliza, [id]: value })
-    // }
     if (!loaded) return <Loader />
 
     const handleDropDown = () => {
@@ -112,8 +100,7 @@ const VehicleForm = () => {
         setVehicleSec(itemSelect)
         const updatedParte = { ...parte, vehiculo: value };
         setParte(updatedParte);
-        fetchAseguradora()
-        // console.log(parte);
+        fetchAseguradora();
     }
 
     const handleSiguiente = async () => {
@@ -131,6 +118,7 @@ const VehicleForm = () => {
             <DropDownPicker
                 listMode='SCROLLVIEW'
                 placeholder='Seleccione un vehiculo'
+                placeholderStyle={{ fontSize: 20 }}
                 open={open}
                 value={value}
                 items={vehicles}
@@ -138,20 +126,21 @@ const VehicleForm = () => {
                 setValue={setValue}
                 setItems={setVehicles}
                 onChangeValue={handleDropDown}
-                style={{ marginLeft: '4%', marginTop: '4%', flex: 1, width: '90%' }}
-                dropDownContainerStyle={{ marginLeft: '4%', marginTop: '4%',  width: '89.5%' }}
+                maxHeight={100}
+                style={{ marginLeft: '4%', marginTop: '4%', width: '90%' }}
+                dropDownContainerStyle={{ marginLeft: '4%', marginTop: '4%', width: '89.5%' }}
             />
             {vehicleSec &&
                 <View style={{ paddingTop: '4%' }}>
-                    <TextCustom label={'Matricula'} id={'matricula'} value={vehicleSec.label} />
-                    <TextCustom label={'Marca'} id={'marca'} value={vehicleSec.options.marca} />
-                    <TextCustom label={'Modelo'} id={'modelo'} value={vehicleSec.options.modelo} />
+                    <TextCustom label={'Matricula'} id={'matricula'} value={vehicleSec.label}  readOnly={true}/>
+                    <TextCustom label={'Marca'} id={'marca'} value={vehicleSec.options.marca}  readOnly={true}/>
+                    <TextCustom label={'Modelo'} id={'modelo'} value={vehicleSec.options.modelo}  readOnly={true}/>
                 </View>
             }
             {poliza &&
                 <View>
-                    <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} value={poliza.aseguradora_id[1]} />
-                    <TextCustom label={'Numero de poliza'} id={'name'} value={poliza.name} />
+                    <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} value={poliza.aseguradora_id[1]} readOnly={true} />
+                    <TextCustom label={'Numero de poliza'} id={'name'} value={poliza.name}  readOnly={true}/>
                 </View>
             }
             <View style={styles.buttonContainer}>
@@ -191,6 +180,17 @@ const styles = StyleSheet.create({
         marginTop: '5%'
     },
 
+    input: {
+        // marginTop: '2%',
+        fontSize: 20,
+        marginLeft: '3%',
+        borderWidth: 1,
+        paddingStart: '5%',
+        borderColor: 'black',
+        borderRadius: 15,
+        marginRight: '5%',
+        // textAlignVertical: 'top',
+    }
 });
 
 export default VehicleForm;

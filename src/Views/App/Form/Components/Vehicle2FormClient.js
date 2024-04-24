@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ENDPOINT_partes, ENDPOINT_poliza, ENDPOINT_vehicles } from '../../../../../utils/endpoints';
 import { StorageKeys } from '../../../../../utils/StorageKeys';
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+import OpenCamera from '../../../../../utils/OpenCamera';
 
 const Vehicle2FormClient = () => {
 
@@ -155,22 +156,24 @@ const Vehicle2FormClient = () => {
             {vehicleSec &&
                 <View>
                     <View style={{ paddingTop: '4%' }}>
-                        <TextCustom label={'Matricula'} id={'matricula'} value={vehicleSec.label} />
-                        <TextCustom label={'Marca'} id={'marca'} value={vehicleSec.options.marca} />
-                        <TextCustom label={'Modelo'} id={'modelo'} value={vehicleSec.options.modelo} />
+                        <TextCustom label={'Matricula'} id={'matricula'} value={vehicleSec.label} style={styles.input} readOnly={true}/>
+                        <TextCustom label={'Marca'} id={'marca'} value={vehicleSec.options.marca} style={styles.input} readOnly={true}/>
+                        <TextCustom label={'Modelo'} id={'modelo'} value={vehicleSec.options.modelo} style={styles.input} readOnly={true}/>
                     </View>
                     {poliza &&
 
                         <View>
-                            <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} value={poliza.aseguradora_id[1]} />
-                            <TextCustom label={'Numero de poliza'} id={'name'} value={poliza.name} />
+                            <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} value={poliza.aseguradora_id[1]} style={styles.input} readOnly={true}/>
+                            <TextCustom label={'Numero de poliza'} id={'name'} value={poliza.name} style={styles.input} readOnly={true}/>
+                            <OpenCamera />
                         </View>
+
                     }
                     {!poliza &&
-
                         <View >
-                            <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} />
-                            <TextCustom label={'Numero de poliza'} id={'name'} />
+                            <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} style={styles.input} readOnly={true}/>
+                            <TextCustom label={'Numero de poliza'} id={'name'} style={styles.input} readOnly={true}/>
+                            <OpenCamera />
                         </View>
 
                     }
@@ -212,5 +215,15 @@ const styles = StyleSheet.create({
         color: '#9a89c0',
         marginTop: '5%',
     },
-
+    input: {
+        // marginTop: '2%',
+        fontSize:20,
+        marginLeft: '3%',
+        borderWidth: 1,
+        paddingStart: '5%',
+        borderColor: 'black',
+        borderRadius: 15,
+        marginRight:'5%',
+        // textAlignVertical: 'top',
+    }
 });

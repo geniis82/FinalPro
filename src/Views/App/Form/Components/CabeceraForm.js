@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StorageKeys } from '../../../../../utils/StorageKeys';
 import { ScrollView } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { TextInput } from 'react-native';
 
 
 
@@ -27,7 +28,7 @@ const CabeceraForm = () => {
         descripcion: ''
     });
 
-    
+
     useFocusEffect(
         useCallback(() => {
             cleanParte();
@@ -53,6 +54,7 @@ const CabeceraForm = () => {
     const handleOnChange = (e) => {
         const { id, value } = e.target;
         setParte({ ...parte, [id]: value })
+        console.log(parte);
     }
 
 
@@ -67,9 +69,9 @@ const CabeceraForm = () => {
 
     return (
         <ScrollView style={styles.container}>
-            <TextCustom label={'Fecha del Parte'} id={'dataParte'} value={moment().format('DD-MM-YYYY')} onChange={handleOnChange} />
-            <TextCustom label={'Localidad'} id={'location'} onChange={handleOnChange} value={parte.location} />
-            <TextCustom label={'Direccion'} id={'addres'} onChange={handleOnChange} value={parte.addres} />
+            <TextCustom label={'Fecha del Parte'} id={'dataParte'} value={moment().format('DD-MM-YYYY')} readOnly={true} onChange={handleOnChange}  />
+            <TextCustom label={'Localidad'} id={'location'} onChange={handleOnChange} value={parte.location} placeholder={'Localidad'}  />
+            <TextCustom label={'Dirección'} id={'addres'} onChange={handleOnChange} value={parte.addres} placeholder={'Dirección'}  />
             <TextCustom
                 label={'Descripción del accidente'}
                 id={'descripcion'}
@@ -77,10 +79,10 @@ const CabeceraForm = () => {
                 onChange={handleOnChange}
                 multiline={true}
                 num={8}
-                
+                placeholder={'Descripción del accidente'}
             />
             <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
-                <Icon name='arrow-forward-circle' size={55}  style={styles.textButton} />
+                <Icon name='arrow-forward-circle' size={55} style={styles.textButton} />
             </TouchableOpacity>
         </ScrollView>
     )
@@ -101,16 +103,41 @@ const styles = StyleSheet.create({
     button: {
         paddingBottom: '4%',
         // backgroundColor:'red',
-        marginLeft:'40%',
-        marginRight:'40%',
-        marginTop:'4%'
+        marginLeft: '40%',
+        marginRight: '40%',
+        marginTop: '4%'
     },
     textButton: {
         textAlign: 'center',
         color: '#9a89c0',
         marginTop: '5%'
     },
-
+    input: {
+        fontSize: 20,
+        marginLeft: '3%',
+        borderWidth: 1,
+        paddingStart: '5%',
+        borderColor: 'black',
+        borderRadius: 15,
+        marginRight: '5%',
+        // textAlignVertical: 'top',
+    },
+    inputTextArea: {
+        fontSize: 20,
+        marginLeft: '3%',
+        borderWidth: 1,
+        paddingStart: '5%',
+        borderColor: 'black',
+        borderRadius: 15,
+        marginRight: '5%',
+        textAlignVertical: 'top',
+    },
+    textLabel: {
+        fontSize: 22,
+        marginLeft: '5%',
+        marginTop: '4%',
+        color: 'black'
+    },
 });
 
 export default CabeceraForm

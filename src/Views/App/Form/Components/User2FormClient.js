@@ -35,11 +35,11 @@ const User2FormClient = ({ userSec,flag,parte }) => {
                 />
             </View>
             <View >
-                <TextCustom label={'Nombre'} id={'name'} value={userSec ? userSec.options.name : ''} placeholder={"Introduzca nombre"} readOnly={true} />
-                <TextCustom label={'Apellidos'} id={'surname'} value={userSec ? userSec.options.surname : ''} placeholder={"Introduzca apellidos"} readOnly={true} />
-                <TextCustom label={'Telefono'} id={'phone'} value={userSec ? userSec.options.tlf : ''} placeholder={"Introduzca telefono"} readOnly={true} />
-                <TextCustom label={'Fecha de Nacimiento'} id={'dateBirth'} value={userSec ? userSec.options.dateBirth : ''} placeholder={"Introduzca fecha de nacimiento"} readOnly={true} />
-                <TextCustom label={'Correo Electronico'} id={'email'} value={userSec ? userSec.options.email : ''} placeholder={"Introduzca correo electronico"} readOnly={true} />
+                <TextCustom label={'Nombre'} id={'name'} value={userSec ? userSec.options.name : ''} placeholder={"Introduzca nombre"} readOnly={true} style={styles.input}/>
+                <TextCustom label={'Apellidos'} id={'surname'} value={userSec ? userSec.options.surname : ''} placeholder={"Introduzca apellidos"} readOnly={true} style={styles.input}/>
+                <TextCustom label={'Telefono'} id={'phone'} value={userSec ? userSec.options.tlf : ''} placeholder={"Introduzca telefono"} readOnly={true} style={styles.input}/>
+                <TextCustom label={'Fecha de Nacimiento'} id={'dateBirth'} value={userSec ? userSec.options.dateBirth : ''} placeholder={"Introduzca fecha de nacimiento"} readOnly={true} style={styles.input}/>
+                <TextCustom label={'Correo Electronico'} id={'email'} value={userSec ? userSec.options.email : ''} placeholder={"Introduzca correo electronico"} readOnly={true} style={styles.input}/>
             </View>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={handleGoBack} style={styles.button}>
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
         color: '#9a89c0',
         marginTop: '5%',
     },
+    
     searchInput: {
         marginLeft: '3%',
         borderWidth: 1,
@@ -96,5 +97,16 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         padding: '3%',
         borderRadius: 100
+    },
+    input: {
+        // marginTop: '2%',
+        fontSize:20,
+        marginLeft: '3%',
+        borderWidth: 1,
+        paddingStart: '5%',
+        borderColor: 'black',
+        borderRadius: 15,
+        marginRight:'5%',
+        // textAlignVertical: 'top',
     }
 });

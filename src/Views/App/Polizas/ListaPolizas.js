@@ -6,6 +6,7 @@ import axios from 'axios'
 import { ENDPOINT_poliza } from '../../../../utils/endpoints'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { Paths } from '../../../../utils/paths';
+import moment from 'moment';
 
 const ListaPoliza = () => {
     const [polizas, setPolizas] = useState([]);
@@ -62,8 +63,6 @@ const ListaPoliza = () => {
 
         const backgroundColor = item.id === selectedId ? '#9a89c0' : '#cfd948';
         const color = item.id === selectedId ? 'white' : 'black';
-
-
         return (
             <Item
                 item={item}

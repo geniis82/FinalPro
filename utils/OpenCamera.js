@@ -1,7 +1,7 @@
 import { StyleSheet, Image, Text, View, PermissionsAndroid } from "react-native";
 import React, { useEffect, useState } from 'react'
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
+import { launchImageLibrary } from "react-native-image-picker";
 
 const OpenCamera = () => {
 
@@ -19,7 +19,7 @@ const OpenCamera = () => {
         // }
         PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA)
             .then(res => {
-                console.log(res);
+                // console.log(res);
                 if (res === PermissionsAndroid.RESULTS.GRANTED) {
                     setAcceptedPermissions(true)
                 }
@@ -35,6 +35,7 @@ const OpenCamera = () => {
         }
     }
 
+    console.log(imgUrl);
     
 
     return (

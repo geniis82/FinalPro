@@ -7,6 +7,7 @@ import { StorageKeys } from "../../../../utils/StorageKeys";
 import { Paths } from "../../../../utils/paths";
 import { StackView, createStackNavigator } from "@react-navigation/stack";
 import { ENDPOINT_partes, ENDPOINT_user } from "../../../../utils/endpoints";
+import moment from "moment";
 
 
 
@@ -61,7 +62,7 @@ const ListaPartes = () => {
 
     const Item = ({ item, onPress, backgroundColor, textColor }) => (
         <TouchableOpacity onPress={() => onPress(item.id)} style={[styles.item, { backgroundColor }]}>
-            <Text style={[styles.title, { color: textColor }]}>{item.name}-{item.dataParte}</Text>
+            <Text style={[styles.title, { color: textColor }]}>Fecha: {moment(item.dataParte).format("DD-MM-YYYY")}</Text>
         </TouchableOpacity>
     );
 

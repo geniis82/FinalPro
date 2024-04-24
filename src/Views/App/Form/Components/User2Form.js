@@ -14,64 +14,40 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import User2FormClient from './User2FormClient';
 import User2FormNoClient from './User2FormNoClient';
 
-
-
 const User2Form = () => {
-
 
     const [acceptedPermission, setAcceptedPermissions] = useState(false);
     const [loaded, setLoaded] = useState(false);
     const [parte, setParte] = useState({})
     const [users, setUsers] = useState([])
-    const [value, setValue] = useState(null);
     const [userSec, setUserSec] = useState({});
     const [user2Id, setUser2ID] = useState({})
     const [search, setSearch] = useState("")
     const [flag, setFlag] = useState("0")
+    const [disable, setDisable] = useState(false)
 
     const [dniScanned, setDniScanned] = useState("")
-    const [client2, setClient2] = useState({})
-    const [dni, setDni] = useState("");
-    const [name, setName] = useState("");
-    const [surname, setSurname] = useState("");
-    const [telefono, setTelefono] = useState("");
-    const [date, setDate] = useState(new Date())
-    const [dateBirth, setDatebirth] = useState("");
-    const [email, setEmail] = useState("");
 
     const navigation = useNavigation();
-
-
 
     useFocusEffect(
         useCallback(() => {
             fetchUser()
             cleanScan()
-            // setSearch(dniScanned)
-            setValue("")
-            setUserSec("")
-            setDni("")
-            setName("")
-            setSurname("")
-            setTelefono("")
-            setEmail("")
-            setDatebirth("")
             setLoaded(true)
+            setDisable(false)
         }, [])
     );
 
-
     useEffect(() => {
         if (dniScanned) {
-            filterUser(dniScanned);
+            setSearch(dniScanned)
         }
     }, [dniScanned]);
-
 
     const cleanScan = async () => {
         await AsyncStorage.removeItem(StorageKeys.DNI_SCANNED)
     }
-
 
     const fetchUser = async () => {
         setFlag("0")
@@ -109,18 +85,14 @@ const User2Form = () => {
             }).finally(() => setLoaded(true))
     }
 
-
     if (!loaded) return <Loader />
 
     const handleOnChange = (text) => {
         setSearch(text);
-        // setSearch(dniScanned)
     };
 
     const filterUser = () => {
-        if (dniScanned !== null) {
-            setSearch(dniScanned);
-        }
+        setDisable(true)
         const user = users.find((item) => item.options.dni === search);
         if (user === undefined) {
             setFlag('1');
@@ -154,12 +126,15 @@ const User2Form = () => {
         }
     };
 
-
     const scannerQr = async () => {
         await requestCameraPermissions()
         navigation.navigate("QRScann")
     }
 
+    const handleGoBack = async () => {
+        await AsyncStorage.removeItem(StorageKeys.DNI_SCANNED)
+        navigation.goBack();
+    };
 
     return (
         <ScrollView style={styles.container}>
@@ -181,6 +156,13 @@ const User2Form = () => {
             {+flag === 1 &&
                 <User2FormNoClient flag={flag} />
             }
+            <View style={styles.buttonContainer}>
+                {!disable &&
+                    <TouchableOpacity onPress={handleGoBack} style={styles.button}>
+                        <Icon name='arrow-back-circle' size={55} style={styles.textButton} />
+                    </TouchableOpacity>
+                }
+            </View>
         </ScrollView>
     )
 
@@ -202,25 +184,28 @@ const styles = StyleSheet.create({
         paddingStart: '5%',
         borderColor: 'black',
         borderRadius: 15,
-        width: '65%'
+        width: '65%',
+        fontSize: 20,
     },
     searchButton: {
         color: '#9a89c0',
         width: '70%'
     },
     button: {
-        // backgroundColor:'blue',
         width: '150%'
     },
+    textButton: {
+        textAlign: 'justify',
+        color: '#9a89c0',
+        marginTop: '5%',
+    },
     button1: {
-        // backgroundColor:'blue',
         width: '150%',
         paddingTop: '8%'
     },
     toggleView: {
         flexDirection: 'row',
         width: '30%',
-        // backgroundColor:'yellow',
         justifyContent: 'space-between'
 
     },
@@ -230,7 +215,6 @@ const styles = StyleSheet.create({
         alignContent: 'space-between',
         padding: 20,
         borderRadius: 100,
-        // backgroundColor: 'green'
     }
 });
 

@@ -23,10 +23,8 @@ const InfoVehiculoPoliza = ({ poliza, handleOnchange }) => {
     }, [poliza])
 
     const fetchPoliza = async () => {
-
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
-        // console.log(poliza);
 
         axios.get(`${ENDPOINT_vehicles}/getVehicleById.php`, {
             params: {

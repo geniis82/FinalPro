@@ -4,7 +4,7 @@ import { Text } from 'react-native-elements';
 
 
 
-const TextCustom = ({ label, value, onChange, id, readOnly, multiline, num, keyboardType, maxLength, secureTextEntry, placeholder }) => {
+const TextCustom = ({style, label, value, onChange, id, readOnly, multiline, num, keyboardType, maxLength, secureTextEntry, placeholder }) => {
 
 
     const handleOnChange = (value) => {
@@ -30,13 +30,14 @@ const styles = StyleSheet.create({
         marginTop: '4%'
     },
     input: {
-        // marginTop: '2%',
-        fontSize:22,
+        marginTop: '2%',
+        fontSize:20,
         marginLeft: '3%',
         borderWidth: 1,
         paddingStart: '5%',
         borderColor: 'black',
         borderRadius: 15,
-        marginRight:'5%'
+        marginRight:'5%',
+        // textAlignVertical: 'top',
     }
 });

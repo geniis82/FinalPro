@@ -8,6 +8,7 @@ import UserForm from './Components/UserForm';
 import Vehicle2Form from './Components/Vehicle2Form';
 import VehicleForm from './Components/VehicleForm';
 import QRScann from './Components/QRScann';
+import OpenCamera from '../../../../utils/OpenCamera';
 
 const Form = () => {
     const Stack = createStackNavigator();
@@ -39,6 +40,9 @@ const Form = () => {
             </Stack.Screen>
             <Stack.Screen name='Vehicle2Form' options={{headerShown: false}}>
                 {() => <Vehicle2Form />}
+            </Stack.Screen>
+            <Stack.Screen name='OpenCamera' options={{headerShown: false}}>
+                {() => <OpenCamera />}
             </Stack.Screen>
         </Stack.Navigator>
     );

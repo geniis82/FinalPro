@@ -34,16 +34,12 @@ const Login = ({ navigation }) => {
                         reset({ index: 0, routes: [{ name: 'App' }] });
                     }
                 })
-
         } else {
             setLoaded(true)
         }
-
     }
 
     const handleLogin = async () => {
-
-
         axios.post(`${ENDPOINT_auth}/login.php`, {
             email: username,
             password,
@@ -86,17 +82,17 @@ const Login = ({ navigation }) => {
                     secureTextEntry
                 />
 
-                <Button
-                    title="Login"
-                    onPress={handleLogin}
-                />
+                <TouchableOpacity onPress={handleLogin} style={styles.buttom}>
+                    <Text style={{textAlign:'center', fontWeight:'bold'}}>LOGIN</Text>
+                </TouchableOpacity>
+                
 
-                <View style={{ flexDirection: 'row', marginTop: 20 }}>
+                {/* <View style={{ flexDirection: 'row', marginTop: 20 }}>
                     <Text>Don't have an account? </Text>
                     <TouchableOpacity onPress={() => navigation.navigate('Register')}>
                         <Text style={styles.link}>Register</Text>
                     </TouchableOpacity>
-                </View>
+                </View> */}
             </View>
         </View>
     );
@@ -116,11 +112,19 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         borderWidth: 1,
         borderColor: '#bbb',
-        borderRadius: 5,
+        borderRadius: 30,
         paddingHorizontal: 14,
+        
     },
-    link: {
-        color: 'blue',
+    buttom:{
+        marginBottom: 12,
+        borderRadius: 100,
+        paddingHorizontal: 14,
+        backgroundColor: '#cfd948',
+        alignContent:'space-between',
+        padding:'4%',
+        width:'90%',
+        marginLeft:'5%'
     },
 });
 

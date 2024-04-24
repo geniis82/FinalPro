@@ -1,4 +1,4 @@
-import React, { useCallback,  useState } from 'react'
+import React, { useCallback, useState } from 'react'
 
 import { View, StyleSheet, Alert, Text } from 'react-native';
 
@@ -49,14 +49,14 @@ const Vehicle2FormNoClient = () => {
 
     const save = async () => {
         const updatedParte = { ...parte, client2: client2, vehiculo2: vehicle2 };
+        await AsyncStorage.setItem(StorageKeys.PARTE, JSON.stringify(updatedParte));
         setParte(updatedParte);
-        await AsyncStorage.setItem(StorageKeys.PARTE, JSON.stringify(parte));
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
         axios.post(`${ENDPOINT_partes}/save.php`, {
             dni,
             token,
-            ...parte
+            ...updatedParte
         })
             .then(res => {
                 const parteData = res.data
@@ -70,7 +70,7 @@ const Vehicle2FormNoClient = () => {
                         },
                     ]);
                 } else {
-                    Alert.alert('Error', 'Introduzca todos los campos', [
+                    Alert.alert('Error', parteData.message, [
                         {
                             text: 'Cancelar',
                             style: 'cancel',
@@ -81,7 +81,7 @@ const Vehicle2FormNoClient = () => {
             .catch(error => {
                 console.error("error al crear parte", error);
             }).finally(() => setLoaded(true))
-    }
+    };
 
     const handleOnChange = (e) => {
         const { id, value } = e.target;
@@ -99,13 +99,13 @@ const Vehicle2FormNoClient = () => {
         <ScrollView style={styles.container}>
             <Text style={{ fontSize: 40, marginLeft: '4%' }}>Vehiculo B</Text>
             <View style={{ paddingTop: '4%' }}>
-                <TextCustom label={'Matricula'} id={'matricula'} value={matricula} onChange={handleOnChange} />
-                <TextCustom label={'Marca'} id={'marca'} value={marca} onChange={handleOnChange} />
-                <TextCustom label={'Modelo'} id={'modelo'} value={modelo} onChange={handleOnChange} />
+                <TextCustom label={'Matricula'} id={'matricula'} value={matricula} onChange={handleOnChange} placeholder={'Matricula'} />
+                <TextCustom label={'Marca'} id={'marca'} value={marca} onChange={handleOnChange} placeholder={'Marca'} />
+                <TextCustom label={'Modelo'} id={'modelo'} value={modelo} onChange={handleOnChange} placeholder={'Modelo'} />
             </View>
             <View >
-                <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora'} value={aseguradora} onChange={handleOnChange} />
-                <TextCustom label={'Numero de poliza'} id={'numPoliza'} value={numPoliza} onChange={handleOnChange} />
+                <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora'} value={aseguradora} onChange={handleOnChange} placeholder={'Nombre de la aseguradora'} />
+                <TextCustom label={'Numero de poliza'} id={'numPoliza'} value={numPoliza} onChange={handleOnChange} placeholder={'Numero de poliza'} />
             </View>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={handleGoBack} style={styles.button}>
@@ -143,5 +143,4 @@ const styles = StyleSheet.create({
         color: '#9a89c0',
         marginTop: '5%',
     },
-
 });
