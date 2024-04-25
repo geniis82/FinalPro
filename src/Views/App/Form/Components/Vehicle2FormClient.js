@@ -10,6 +10,8 @@ import { ENDPOINT_partes, ENDPOINT_poliza, ENDPOINT_vehicles } from '../../../..
 import { StorageKeys } from '../../../../../utils/StorageKeys';
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import OpenCamera from '../../../../../utils/OpenCamera';
+// import ExportPdf from '../../ExportPdf/ExportPdf';
+
 
 const Vehicle2FormClient = () => {
 
@@ -27,12 +29,7 @@ const Vehicle2FormClient = () => {
     const [vehicleSec, setVehicleSec] = useState();
     const [parte, setParte] = useState({})
 
-    const handleDropDown = () => {
-        const itemSelect = vehicles.find(item => item.value === value)
-        setVehicleSec(itemSelect)
-        fetchAseguradora()
-        parte.vehiculo2 = value
-    }
+    const [imageUri, setImageUri] = useState(null);
 
     useFocusEffect(
         useCallback(() => {
@@ -41,6 +38,61 @@ const Vehicle2FormClient = () => {
             setPoliza("")
             setValue("")
         }, []));
+
+    const handleDropDown = () => {
+        const itemSelect = vehicles.find(item => item.value === value);
+        setVehicleSec(itemSelect);
+        fetchAseguradora();
+        setParte(prevState => ({
+            ...prevState,
+            vehiculo2: value
+        }));
+    };
+
+    const save = async () => {
+        console.log(parte);
+        const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
+        const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
+        axios.post(`${ENDPOINT_partes}/save.php`, {
+            dni,
+            token,
+            ...parte,
+        })
+        .then(res => {
+            const parteData = res.data
+            console.log(parteData);
+            if (parteData.status) {
+                // <ExportPdf/>
+                Alert.alert('Parte Eniado', 'El parte se ha enviado correctamente', [
+                    {
+                        text: 'Aceptar',
+                        onPress: () => navigation.navigate("Mis Partes"),
+                        style: 'cancel',
+                    },
+                ])
+                cleanScan();
+            } else {
+                Alert.alert('Error', 'Introduzca todos los campos', [
+                        {
+                            text: 'Cancelar',
+                            style: 'cancel',
+                        },
+                    ]);
+                }
+            })
+            .catch(error => {
+                console.error("error al crear parte", error);
+            }).finally(() => setLoaded(true))
+        }
+
+
+    const cleanScan = async () => {
+        await AsyncStorage.removeItem(StorageKeys.DNI_SCANNED)
+    }
+
+    const handleGoBack = () => {
+        navigation.navigate("User2Form");
+    };
 
     const fetchVehicle = async () => {
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
@@ -93,48 +145,6 @@ const Vehicle2FormClient = () => {
             }).finally(() => setLoaded(true))
     }
 
-    const cleanScan = async () => {
-        await AsyncStorage.removeItem(StorageKeys.DNI_SCANNED)
-    }
-    const save = async () => {
-        console.log(parte);
-        const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
-        const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
-        axios.post(`${ENDPOINT_partes}/save.php`, {
-            dni,
-            token,
-            ...parte
-        })
-            .then(res => {
-                const parteData = res.data
-                console.log(parteData);
-                if (parteData.status) {
-                    Alert.alert('Parte Eniado', 'El parte se ha enviado correctamente', [
-                        {
-                            text: 'Aceptar',
-                            onPress: () => navigation.navigate("Mis Partes"),
-                            style: 'cancel',
-                        },
-                    ])
-                    cleanScan();
-                } else {
-                    Alert.alert('Error', 'Introduzca todos los campos', [
-                        {
-                            text: 'Cancelar',
-                            style: 'cancel',
-                        },
-                    ]);
-                }
-            })
-            .catch(error => {
-                console.error("error al crear parte", error);
-            }).finally(() => setLoaded(true))
-    }
-
-    const handleGoBack = () => {
-        navigation.navigate("User2Form");
-    };
-
     return (
 
         <ScrollView style={styles.container}>
@@ -156,24 +166,24 @@ const Vehicle2FormClient = () => {
             {vehicleSec &&
                 <View>
                     <View style={{ paddingTop: '4%' }}>
-                        <TextCustom label={'Matricula'} id={'matricula'} value={vehicleSec.label} style={styles.input} readOnly={true}/>
-                        <TextCustom label={'Marca'} id={'marca'} value={vehicleSec.options.marca} style={styles.input} readOnly={true}/>
-                        <TextCustom label={'Modelo'} id={'modelo'} value={vehicleSec.options.modelo} style={styles.input} readOnly={true}/>
+                        <TextCustom label={'Matricula'} id={'matricula'} value={vehicleSec.label} style={styles.input} readOnly={true} />
+                        <TextCustom label={'Marca'} id={'marca'} value={vehicleSec.options.marca} style={styles.input} readOnly={true} />
+                        <TextCustom label={'Modelo'} id={'modelo'} value={vehicleSec.options.modelo} style={styles.input} readOnly={true} />
                     </View>
                     {poliza &&
 
                         <View>
-                            <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} value={poliza.aseguradora_id[1]} style={styles.input} readOnly={true}/>
-                            <TextCustom label={'Numero de poliza'} id={'name'} value={poliza.name} style={styles.input} readOnly={true}/>
-                            <OpenCamera />
+                            <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} value={poliza.aseguradora_id[1]} style={styles.input} readOnly={true} />
+                            <TextCustom label={'Numero de poliza'} id={'name'} value={poliza.name} style={styles.input} readOnly={true} />
+                            <OpenCamera setImageUri={setImageUri}/>
                         </View>
 
                     }
                     {!poliza &&
                         <View >
-                            <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} style={styles.input} readOnly={true}/>
-                            <TextCustom label={'Numero de poliza'} id={'name'} style={styles.input} readOnly={true}/>
-                            <OpenCamera />
+                            <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} style={styles.input} readOnly={true} />
+                            <TextCustom label={'Numero de poliza'} id={'name'} style={styles.input} readOnly={true} />
+                            <OpenCamera setImageUri={setImageUri}/>
                         </View>
 
                     }
@@ -217,13 +227,13 @@ const styles = StyleSheet.create({
     },
     input: {
         // marginTop: '2%',
-        fontSize:20,
+        fontSize: 20,
         marginLeft: '3%',
         borderWidth: 1,
         paddingStart: '5%',
         borderColor: 'black',
         borderRadius: 15,
-        marginRight:'5%',
+        marginRight: '5%',
         // textAlignVertical: 'top',
     }
 });

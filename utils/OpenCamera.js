@@ -3,20 +3,19 @@ import React, { useEffect, useState } from 'react'
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { launchImageLibrary } from "react-native-image-picker";
 
-const OpenCamera = () => {
-
-    // useEffect(() => {
-    //     requestGaleriaPermisions();
-    // }, [])
+const OpenCamera = ({setImageUri}) => {
 
     const [imgUrl, setImgUrl] = useState('https://img.freepik.com/vector-premium/icono-marco-fotos-foto-vacia-blanco-vector-sobre-fondo-transparente-aislado-eps-10_399089-1290.jpg');
     const [acceptedPermission, setAcceptedPermissions] = useState(false)
+    // const [imageUri, setImageUri] = useState(null);
+
+
+    useEffect(() => {
+        requestGaleriaPermisions();
+    }, [])
+
 
     const requestGaleriaPermisions = () => {
-
-        // const granted= await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
-        // if(granted===PermissionsAndroid.RESULTS.GRANTED){
-        // }
         PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA)
             .then(res => {
                 // console.log(res);
@@ -28,22 +27,15 @@ const OpenCamera = () => {
     }
 
     const openLib = async () => {
-        requestGaleriaPermisions();
         if (acceptedPermission) {
             const result = await launchImageLibrary();
             setImgUrl(result?.assets[0]?.uri);
+            setImageUri(result?.assets[0]?.uri);
         }
     }
 
-    console.log(imgUrl);
-    
-
     return (
         <View style={strles.container}>
-            {/* <Image resizeMode="contain" style={strles.img} source={{uri: imgUrl,}}/> */}
-            {/* <TouchableOpacity onPress={openCamera} style={strles.btnCam} >
-                <Image resizeMode="contain" style={strles.img} source={{uri: imgUrl,}}/>
-            </TouchableOpacity> */}
             <TouchableOpacity onPress={openLib} style={strles.btnCam} >
                 <Image resizeMode="contain" style={strles.img} source={{ uri: imgUrl, }} />
             </TouchableOpacity>

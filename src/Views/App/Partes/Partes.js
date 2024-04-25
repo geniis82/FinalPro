@@ -9,6 +9,7 @@ import { StackView, createStackNavigator } from "@react-navigation/stack";
 import { ENDPOINT_partes, ENDPOINT_user } from "../../../../utils/endpoints";
 import ListaPartes from "./ListaPartes";
 import InfoPartes from "./InfoPartes";
+import ExportPdf from "../ExportPdf/ExportPdf";
 
 
 
@@ -25,6 +26,9 @@ const Partes = () => {
 
     return(
         <Stack.Navigator>
+            {/* <Stack.Screen name="ExportPdf"options={{headerShown:false}}>
+                {()=><ExportPdf/>}
+            </Stack.Screen> */}
             <Stack.Screen name="ListaPartes" options={{headerShown:false}} >
                 {()=><ListaPartes/>}
             </Stack.Screen>

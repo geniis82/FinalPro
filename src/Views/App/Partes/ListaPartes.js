@@ -8,6 +8,7 @@ import { Paths } from "../../../../utils/paths";
 import { StackView, createStackNavigator } from "@react-navigation/stack";
 import { ENDPOINT_partes, ENDPOINT_user } from "../../../../utils/endpoints";
 import moment from "moment";
+import ExportPdf from "../ExportPdf/ExportPdf";
 
 
 
@@ -93,6 +94,7 @@ const ListaPartes = () => {
     } else {
         return (
             <SafeAreaView>
+                
                 <FlatList
                     data={partes}
                     renderItem={renderItem}

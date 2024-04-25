@@ -69,9 +69,9 @@ const CabeceraForm = () => {
 
     return (
         <ScrollView style={styles.container}>
-            <TextCustom label={'Fecha del Parte'} id={'dataParte'} value={moment().format('DD-MM-YYYY')} readOnly={true} onChange={handleOnChange}  />
-            <TextCustom label={'Localidad'} id={'location'} onChange={handleOnChange} value={parte.location} placeholder={'Localidad'}  />
-            <TextCustom label={'Dirección'} id={'addres'} onChange={handleOnChange} value={parte.addres} placeholder={'Dirección'}  />
+            <TextCustom label={'Fecha del Parte'} id={'dataParte'} value={moment().format('DD-MM-YYYY')} readOnly={true} onChange={handleOnChange} />
+            <TextCustom label={'Localidad'} id={'location'} onChange={handleOnChange} value={parte.location} placeholder={'Localidad'} />
+            <TextCustom label={'Dirección'} id={'addres'} onChange={handleOnChange} value={parte.addres} placeholder={'Dirección'} />
             <TextCustom
                 label={'Descripción del accidente'}
                 id={'descripcion'}
@@ -80,7 +80,12 @@ const CabeceraForm = () => {
                 multiline={true}
                 num={8}
                 placeholder={'Descripción del accidente'}
+                style={styles.input}
             />
+            {/* <View>
+                <Text style={styles.textLabel}>Descripción del accidente</Text>
+                <TextInput style={styles.input} id={'description'} placeholder={'Descripción del accidente'} onChangeText={handleOnChange} multiline={true} numberOfLines={8} >{parte.descripcion}</TextInput>
+            </View> */}
             <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
                 <Icon name='arrow-forward-circle' size={55} style={styles.textButton} />
             </TouchableOpacity>
@@ -120,7 +125,7 @@ const styles = StyleSheet.create({
         borderColor: 'black',
         borderRadius: 15,
         marginRight: '5%',
-        // textAlignVertical: 'top',
+        textAlignVertical: 'top',
     },
     inputTextArea: {
         fontSize: 20,

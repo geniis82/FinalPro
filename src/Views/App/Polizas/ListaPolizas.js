@@ -55,7 +55,7 @@ const ListaPoliza = () => {
 
     const Item = ({ item, onPress, backgroundColor, textColor }) => (
         <TouchableOpacity onPress={() => onPress(item.id)} style={[styles.item, { backgroundColor }]}>
-            <Text style={[styles.title, { color: textColor }]}>{item.name}-{item.vehiculo_id[1]}</Text>
+            <Text style={[styles.title, { color: textColor }]}>{item.vehiculo_id[1]}</Text>
         </TouchableOpacity>
     );
 
