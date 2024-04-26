@@ -26,9 +26,9 @@ const Partes = () => {
 
     return(
         <Stack.Navigator>
-            {/* <Stack.Screen name="ExportPdf"options={{headerShown:false}}>
+            <Stack.Screen name="ExportPdf"options={{headerShown:false}}>
                 {()=><ExportPdf/>}
-            </Stack.Screen> */}
+            </Stack.Screen>
             <Stack.Screen name="ListaPartes" options={{headerShown:false}} >
                 {()=><ListaPartes/>}
             </Stack.Screen>

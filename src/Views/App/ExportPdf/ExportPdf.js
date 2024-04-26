@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, PermissionsAndroid, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, PermissionsAndroid, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { Platform } from 'react-native';
 import { DownloadDirectoryPath, moveFile } from 'react-native-fs';
 import RNHTMLtoPDF from 'react-native-html-to-pdf'
+import FileViewer from 'react-native-file-viewer'
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import { htmlContent } from '../../../Template/PdfTemplate';
 
-const ExportPdf = async () => {
+const ExportPdf = ({ parte }) => {
 
     const [acceptedPermission, setAcceptedPermissions] = useState(false)
     const [acceptedPermissionREAD, setAcceptedPermissionsREAD] = useState(false)
@@ -55,24 +58,67 @@ const ExportPdf = async () => {
         }
         try {
             const options = {
-                html: '<h1>PDF Test</h1>',
-                fileName: 'Test',
+                html: htmlContent(parte),
+                fileName: "Report",
             };
             const file = await RNHTMLtoPDF.convert(options);
-            moveFile(file.filePath, DownloadDirectoryPath + "/" + file.fileName + ".pdf")
+            const finalPath = DownloadDirectoryPath + "/" + file.fileName + ".pdf"
+            moveFile(file.filePath, finalPath)
                 .then(res => {
-                    console.log('PDF creado con éxito');
+                    Alert.alert('PDF creado', 'Path:' + finalPath, [
+                        { text: 'Cancel', style: 'cancel' },
+                        { text: 'Open', onPress: () => openFile(finalPath) }
+                    ], { cancelable: true });
+                    // console.log('PDF creado con éxito');
                 }).catch(err => {
                     console.error(err);
                 });
+
         } catch (error) {
             console.error('Error al crear el PDF:', error);
             Alert.alert('Error al crear el PDF');
         }
     }
 
+    const openFile = (filePath) => {
+        const path = filePath
+        FileViewer.open(path) // absolute-path-to-my-local-file.
+            .then(() => {
+                // success
+            })
+            .catch((error) => {
+                // error
+            });
+    }
+
     return (
-        { createPdf }
+        <View style={{marginLeft:'69%',marginRight:'6%'}}>
+            <TouchableOpacity onPress={() => createPdf()} style={styles.button}>
+                <Text style={{marginTop:'10%',marginRight:'8%'}}>Descargar</Text>
+                <Icon name='file-pdf' size={30} style={styles.textButton} />
+            </TouchableOpacity>
+        </View>
     )
 }
 export default ExportPdf;
+
+const styles = StyleSheet.create({
+    container: {
+        paddingTop: '5%',
+        paddingBottom: '5%',
+    },
+    button: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        paddingBottom: '4%',
+        // backgroundColor:'red',
+        // marginLeft: '40%',
+        marginRight: '10%',
+        marginTop: '4%'
+    },
+    textButton: {
+        textAlign: 'center',
+        color: '#9a89c0',
+        marginTop: '5%'
+    },
+});

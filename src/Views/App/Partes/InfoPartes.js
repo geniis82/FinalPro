@@ -12,6 +12,7 @@ import { ENDPOINT_partes } from '../../../../utils/endpoints';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StorageKeys } from '../../../../utils/StorageKeys';
 import TextCustom from '../../../Components/TextCustom';
+import ExportPdf from '../ExportPdf/ExportPdf';
 
 const InfoPartes = () => {
 
@@ -26,7 +27,7 @@ const InfoPartes = () => {
     const fetchParte = async () => {
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
-        axios.get(`${ENDPOINT_partes}/getById.php`, {
+        axios.get(`${ENDPOINT_partes}/getInfo.php`, {
             params: {
                 dni,
                 token,
@@ -55,6 +56,7 @@ const InfoPartes = () => {
 
     return (
         <ScrollView style={{marginBottom:'4%'}}>
+            <ExportPdf parte={parte}/>
             <CabeceraInfoPartes parte={parte} handleOnChange={handleOnChange} />
             <ParteVehiculo1 parte={parte} handleOnChange={handleOnChange} />
             <ParteVehiculo2 parte={parte} handleOnChange={handleOnChange} />

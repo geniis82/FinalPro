@@ -10,7 +10,9 @@ import { ENDPOINT_partes, ENDPOINT_poliza, ENDPOINT_vehicles } from '../../../..
 import { StorageKeys } from '../../../../../utils/StorageKeys';
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import OpenCamera from '../../../../../utils/OpenCamera';
-// import ExportPdf from '../../ExportPdf/ExportPdf';
+
+
+
 
 
 const Vehicle2FormClient = () => {
@@ -50,7 +52,6 @@ const Vehicle2FormClient = () => {
     };
 
     const save = async () => {
-        console.log(parte);
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
         axios.post(`${ENDPOINT_partes}/save.php`, {
@@ -58,21 +59,20 @@ const Vehicle2FormClient = () => {
             token,
             ...parte,
         })
-        .then(res => {
-            const parteData = res.data
-            console.log(parteData);
-            if (parteData.status) {
-                // <ExportPdf/>
-                Alert.alert('Parte Eniado', 'El parte se ha enviado correctamente', [
-                    {
-                        text: 'Aceptar',
-                        onPress: () => navigation.navigate("Mis Partes"),
-                        style: 'cancel',
-                    },
-                ])
-                cleanScan();
-            } else {
-                Alert.alert('Error', 'Introduzca todos los campos', [
+            .then(res => {
+                const parteData = res.data
+                console.log(parteData);
+                if (parteData.status) {
+                    Alert.alert('Parte Eniado', 'El parte se ha enviado correctamente', [
+                        {
+                            text: 'Aceptar',
+                            onPress: () => navigation.navigate("Mis Partes"),
+                            style: 'cancel',
+                        },
+                    ])
+                    cleanScan();
+                } else {
+                    Alert.alert('Error', 'Introduzca todos los campos', [
                         {
                             text: 'Cancelar',
                             style: 'cancel',
@@ -83,7 +83,9 @@ const Vehicle2FormClient = () => {
             .catch(error => {
                 console.error("error al crear parte", error);
             }).finally(() => setLoaded(true))
-        }
+    }
+
+    
 
 
     const cleanScan = async () => {
@@ -163,6 +165,7 @@ const Vehicle2FormClient = () => {
                 dropDownContainerStyle={{ marginLeft: '4%', marginTop: '4%', width: '89.5%' }}
             />
 
+
             {vehicleSec &&
                 <View>
                     <View style={{ paddingTop: '4%' }}>
@@ -175,7 +178,7 @@ const Vehicle2FormClient = () => {
                         <View>
                             <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} value={poliza.aseguradora_id[1]} style={styles.input} readOnly={true} />
                             <TextCustom label={'Numero de poliza'} id={'name'} value={poliza.name} style={styles.input} readOnly={true} />
-                            <OpenCamera setImageUri={setImageUri}/>
+                            <OpenCamera />
                         </View>
 
                     }
@@ -183,7 +186,7 @@ const Vehicle2FormClient = () => {
                         <View >
                             <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} style={styles.input} readOnly={true} />
                             <TextCustom label={'Numero de poliza'} id={'name'} style={styles.input} readOnly={true} />
-                            <OpenCamera setImageUri={setImageUri}/>
+                            <OpenCamera />
                         </View>
 
                     }

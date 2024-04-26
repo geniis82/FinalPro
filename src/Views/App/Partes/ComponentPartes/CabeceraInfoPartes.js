@@ -15,7 +15,7 @@ const CabeceraInfoPartes = ({ parte, handleOnChange }) => {
 
 
     return (
-        <View style={styles.container}>
+        <View >
             <TextCustom label={'Fecha del Parte'} id={'dataParte'} value={moment(parte.dataParte).format("DD-MM-YYYY")} onChange={handleOnChange} readOnly={true} />
             <TextCustom label={'Localidad'} id={'location'} value={parte.location} onChange={handleOnChange} readOnly={true} />
             <TextCustom label={'Direccion'} id={'addres'} value={parte.addres} onChange={handleOnChange} readOnly={true} />
@@ -31,9 +31,6 @@ const CabeceraInfoPartes = ({ parte, handleOnChange }) => {
 export default CabeceraInfoPartes;
 
 const styles = StyleSheet.create({
-    container: {
-        paddingVertical: 10,
-    },
 
     textLabel: {
         fontSize: 22,

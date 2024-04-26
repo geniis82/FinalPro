@@ -2,8 +2,9 @@ import { StyleSheet, Image, Text, View, PermissionsAndroid } from "react-native"
 import React, { useEffect, useState } from 'react'
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { launchImageLibrary } from "react-native-image-picker";
+import { ENDPOINT_partes } from "./endpoints";
 
-const OpenCamera = ({setImageUri}) => {
+const OpenCamera = () => {
 
     const [imgUrl, setImgUrl] = useState('https://img.freepik.com/vector-premium/icono-marco-fotos-foto-vacia-blanco-vector-sobre-fondo-transparente-aislado-eps-10_399089-1290.jpg');
     const [acceptedPermission, setAcceptedPermissions] = useState(false)
@@ -30,7 +31,25 @@ const OpenCamera = ({setImageUri}) => {
         if (acceptedPermission) {
             const result = await launchImageLibrary();
             setImgUrl(result?.assets[0]?.uri);
-            setImageUri(result?.assets[0]?.uri);
+            const formdata = new FormData()
+            formdata.append('file', {
+                uri: result?.assets[0]?.uri,
+                type: result?.assets[0]?.type,
+                name: result?.assets[0]?.fileName
+            })
+            console.log(formdata.getParts('file'));
+            let res = await fetch(
+                ENDPOINT_partes, 
+                {
+                    method: 'post',
+                    body: formdata,
+                    headers: {
+                        'Content-tType': 'multipart/form-data;',
+                    },
+                }
+            );
+            let responseJson = await res.json();
+            console.log(responseJson);
         }
     }
 
@@ -50,9 +69,9 @@ const strles = StyleSheet.create({
     container: {
         flex: 1,
         // backgroundColor: 'red',
-        marginTop:'15%',
-        marginBottom:'15%',
-        
+        marginTop: '15%',
+        marginBottom: '15%',
+
     },
     img: {
         width: '90%',
@@ -65,8 +84,8 @@ const strles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
-        
+
 
     },
-    
+
 })
