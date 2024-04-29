@@ -15,6 +15,7 @@ import OpenCamera from '../../../../../utils/OpenCamera';
 
 
 
+
 const Vehicle2FormClient = () => {
 
     const route = useRoute();
@@ -31,7 +32,6 @@ const Vehicle2FormClient = () => {
     const [vehicleSec, setVehicleSec] = useState();
     const [parte, setParte] = useState({})
 
-    const [imageUri, setImageUri] = useState(null);
 
     useFocusEffect(
         useCallback(() => {
@@ -52,6 +52,7 @@ const Vehicle2FormClient = () => {
     };
 
     const save = async () => {
+        
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
         axios.post(`${ENDPOINT_partes}/save.php`, {
@@ -85,7 +86,7 @@ const Vehicle2FormClient = () => {
             }).finally(() => setLoaded(true))
     }
 
-    
+
 
 
     const cleanScan = async () => {

@@ -1,14 +1,18 @@
-import { StyleSheet, Image, Text, View, PermissionsAndroid } from "react-native";
+import { StyleSheet, Image, Text, View, PermissionsAndroid, Platform } from "react-native";
 import React, { useEffect, useState } from 'react'
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { launchImageLibrary } from "react-native-image-picker";
 import { ENDPOINT_partes } from "./endpoints";
+import axios from "axios";
+import RNFetchBlob from "rn-fetch-blob";
+
 
 const OpenCamera = () => {
 
     const [imgUrl, setImgUrl] = useState('https://img.freepik.com/vector-premium/icono-marco-fotos-foto-vacia-blanco-vector-sobre-fondo-transparente-aislado-eps-10_399089-1290.jpg');
     const [acceptedPermission, setAcceptedPermissions] = useState(false)
-    // const [imageUri, setImageUri] = useState(null);
+    // const [imageUri, setImageUri] = useState(null);.
+    const [formData, setFormData] = useState({})
 
 
     useEffect(() => {
@@ -31,27 +35,29 @@ const OpenCamera = () => {
         if (acceptedPermission) {
             const result = await launchImageLibrary();
             setImgUrl(result?.assets[0]?.uri);
-            const formdata = new FormData()
-            formdata.append('file', {
+            const formData = new FormData();
+            formData.append('file', {
                 uri: result?.assets[0]?.uri,
                 type: result?.assets[0]?.type,
-                name: result?.assets[0]?.fileName
-            })
-            console.log(formdata.getParts('file'));
-            let res = await fetch(
-                ENDPOINT_partes, 
+                name: result?.assets[0]?.fileName,
+            });
+            axios.post(
+                `${ENDPOINT_partes}/uploadParte.php`,
+                formData,
                 {
-                    method: 'post',
-                    body: formdata,
                     headers: {
-                        'Content-tType': 'multipart/form-data;',
+                        'Content-Type': 'multipart/form-data',
                     },
                 }
-            );
-            let responseJson = await res.json();
-            console.log(responseJson);
+            ).then(res => {
+                const imageData = res.data;
+                console.log(imageData);
+            }).catch(error => {
+                console.error('Error al subir la imagen:', error);
+            });
         }
-    }
+    };
+
 
     return (
         <View style={strles.container}>
