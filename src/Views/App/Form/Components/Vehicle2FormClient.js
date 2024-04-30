@@ -12,10 +12,6 @@ import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/nativ
 import OpenCamera from '../../../../../utils/OpenCamera';
 
 
-
-
-
-
 const Vehicle2FormClient = () => {
 
     const route = useRoute();
@@ -31,6 +27,7 @@ const Vehicle2FormClient = () => {
     const [value, setValue] = useState(null);
     const [vehicleSec, setVehicleSec] = useState();
     const [parte, setParte] = useState({})
+    const formData = new FormData();
 
 
     useFocusEffect(
@@ -52,7 +49,6 @@ const Vehicle2FormClient = () => {
     };
 
     const save = async () => {
-        
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
         axios.post(`${ENDPOINT_partes}/save.php`, {
@@ -64,6 +60,7 @@ const Vehicle2FormClient = () => {
                 const parteData = res.data
                 console.log(parteData);
                 if (parteData.status) {
+                    saveFoto()
                     Alert.alert('Parte Eniado', 'El parte se ha enviado correctamente', [
                         {
                             text: 'Aceptar',
@@ -86,6 +83,26 @@ const Vehicle2FormClient = () => {
             }).finally(() => setLoaded(true))
     }
 
+    const saveFoto = async () => {
+        if (formData !== null) {
+            // formData.
+            // formData.set('name', id)
+            axios.post(
+                `${ENDPOINT_partes}/uploadParte.php`,
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }
+            ).then(res => {
+                const imageData = res.data;
+                console.log(imageData);
+            }).catch(error => {
+                console.error('Error al subir la imagen:', error);
+            });
+        }
+    }
 
 
 
@@ -179,7 +196,7 @@ const Vehicle2FormClient = () => {
                         <View>
                             <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} value={poliza.aseguradora_id[1]} style={styles.input} readOnly={true} />
                             <TextCustom label={'Numero de poliza'} id={'name'} value={poliza.name} style={styles.input} readOnly={true} />
-                            <OpenCamera />
+                            <OpenCamera formData={formData} />
                         </View>
 
                     }
@@ -187,7 +204,7 @@ const Vehicle2FormClient = () => {
                         <View >
                             <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} style={styles.input} readOnly={true} />
                             <TextCustom label={'Numero de poliza'} id={'name'} style={styles.input} readOnly={true} />
-                            <OpenCamera />
+                            <OpenCamera formData={formData} />
                         </View>
 
                     }
