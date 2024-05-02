@@ -27,7 +27,8 @@ const Vehicle2FormClient = () => {
     const [value, setValue] = useState(null);
     const [vehicleSec, setVehicleSec] = useState();
     const [parte, setParte] = useState({})
-    const formData = new FormData();
+    const [imgName, setImgName]=useState("")
+    
 
 
     useFocusEffect(
@@ -51,6 +52,7 @@ const Vehicle2FormClient = () => {
     const save = async () => {
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
+
         axios.post(`${ENDPOINT_partes}/save.php`, {
             dni,
             token,
@@ -60,7 +62,6 @@ const Vehicle2FormClient = () => {
                 const parteData = res.data
                 console.log(parteData);
                 if (parteData.status) {
-                    saveFoto()
                     Alert.alert('Parte Eniado', 'El parte se ha enviado correctamente', [
                         {
                             text: 'Aceptar',
@@ -83,28 +84,29 @@ const Vehicle2FormClient = () => {
             }).finally(() => setLoaded(true))
     }
 
-    const saveFoto = async () => {
-        if (formData !== null) {
-            // formData.
-            // formData.set('name', id)
-            axios.post(
-                `${ENDPOINT_partes}/uploadParte.php`,
-                formData,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                }
-            ).then(res => {
-                const imageData = res.data;
-                console.log(imageData);
-            }).catch(error => {
-                console.error('Error al subir la imagen:', error);
-            });
-        }
+    const saveFoto = async ({formData}) => {
+        // const p = await AsyncStorage.getItem(StorageKeys.PARTE)
+        // const storedParte = JSON.parse(p || '{}');
+        // // console.log(p);
+        // setParte(storedParte);
+        axios.post(
+            `${ENDPOINT_partes}/uploadParte.php`,
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            }
+        ).then(res => {
+            const imageData = res.data;
+            setImgName(imageData['image_url'])
+            const updatedParte = { ...parte, photo: imageData['image_url'] };
+            setParte(updatedParte);
+            // console.log(imageData['image_url']);
+        }).catch(error => {
+            console.error('Error al subir la imagen:', error);
+        });
     }
-
-
 
     const cleanScan = async () => {
         await AsyncStorage.removeItem(StorageKeys.DNI_SCANNED)
@@ -165,6 +167,16 @@ const Vehicle2FormClient = () => {
             }).finally(() => setLoaded(true))
     }
 
+    const handleLib = async ({ result }) => {
+        const formData = new FormData();
+        formData.append('file', {
+            uri: result?.assets[0]?.uri,
+            type: result?.assets[0]?.type,
+            name: result?.assets[0]?.fileName,
+        });
+        saveFoto({formData})
+    }
+
     return (
 
         <ScrollView style={styles.container}>
@@ -196,7 +208,7 @@ const Vehicle2FormClient = () => {
                         <View>
                             <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} value={poliza.aseguradora_id[1]} style={styles.input} readOnly={true} />
                             <TextCustom label={'Numero de poliza'} id={'name'} value={poliza.name} style={styles.input} readOnly={true} />
-                            <OpenCamera formData={formData} />
+                            <OpenCamera handleLib={handleLib} />
                         </View>
 
                     }
@@ -204,7 +216,7 @@ const Vehicle2FormClient = () => {
                         <View >
                             <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} style={styles.input} readOnly={true} />
                             <TextCustom label={'Numero de poliza'} id={'name'} style={styles.input} readOnly={true} />
-                            <OpenCamera formData={formData} />
+                            <OpenCamera handleLib={handleLib} />
                         </View>
 
                     }

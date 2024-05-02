@@ -54,7 +54,7 @@ const CabeceraForm = () => {
     const handleOnChange = (e) => {
         const { id, value } = e.target;
         setParte({ ...parte, [id]: value })
-        console.log(parte);
+        // console.log(parte);
     }
 
 

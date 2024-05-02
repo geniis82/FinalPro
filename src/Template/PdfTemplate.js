@@ -119,7 +119,7 @@ export const htmlContent = (parte) => {
                                 <td>${parte.vehiculo2.poliza_ids.name}</td>
                             </tr>
                         </table>
-                    </div>
+                        </div>
                 </div>
             </body>
         </html>

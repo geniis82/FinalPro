@@ -2,18 +2,14 @@ import { StyleSheet, Image, Text, View, PermissionsAndroid, Platform } from "rea
 import React, { useEffect, useState } from 'react'
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { launchImageLibrary } from "react-native-image-picker";
-import { ENDPOINT_partes } from "./endpoints";
-import axios from "axios";
 
 
 
-const OpenCamera = ({formData}) => {
+
+const OpenCamera = ({ handleLib }) => {
 
     const [imgUrl, setImgUrl] = useState('https://img.freepik.com/vector-premium/icono-marco-fotos-foto-vacia-blanco-vector-sobre-fondo-transparente-aislado-eps-10_399089-1290.jpg');
     const [acceptedPermission, setAcceptedPermissions] = useState(false)
-    // const [imageUri, setImageUri] = useState(null);.
-    // const [formData, setFormData] = useState({})
-
 
     useEffect(() => {
         requestGaleriaPermisions();
@@ -32,31 +28,13 @@ const OpenCamera = ({formData}) => {
     }
 
     const openLib = async () => {
-        // formData.delete()
+        const options = {
+
+        }
         if (acceptedPermission) {
             const result = await launchImageLibrary();
             setImgUrl(result?.assets[0]?.uri);
-            // const formData = new FormData();
-            formData.append('file', {
-                uri: result?.assets[0]?.uri,
-                type: result?.assets[0]?.type,
-                name: result?.assets[0]?.fileName,
-            });
-            // console.log(formData.getAll('file'));
-            // axios.post(
-            //     `${ENDPOINT_partes}/uploadParte.php`,
-            //     formData,
-            //     {
-            //         headers: {
-            //             'Content-Type': 'multipart/form-data',
-            //         },
-            //     }
-            // ).then(res => {
-            //     const imageData = res.data;
-            //     console.log(imageData);
-            // }).catch(error => {
-            //     console.error('Error al subir la imagen:', error);
-            // });
+            handleLib({ result })
         }
     };
 

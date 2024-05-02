@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+    Image,
     StyleSheet,
     Text,
     TextInput,
@@ -9,9 +10,8 @@ import TextCustom from '../../../../Components/TextCustom';
 import moment from 'moment';
 
 
-
-
 const CabeceraInfoPartes = ({ parte, handleOnChange }) => {
+
 
 
     return (
@@ -19,9 +19,13 @@ const CabeceraInfoPartes = ({ parte, handleOnChange }) => {
             <TextCustom label={'Fecha del Parte'} id={'dataParte'} value={moment(parte.dataParte).format("DD-MM-YYYY")} onChange={handleOnChange} readOnly={true} />
             <TextCustom label={'Localidad'} id={'location'} value={parte.location} onChange={handleOnChange} readOnly={true} />
             <TextCustom label={'Direccion'} id={'addres'} value={parte.addres} onChange={handleOnChange} readOnly={true} />
-            <View style={styles.descripcionContainer}>
+            <View>
                 <Text style={styles.textLabel}>Descripcion</Text>
                 <TextInput style={styles.input} readOnly={true} multiline={true} numberOfLines={6}>{parte.descripcion}</TextInput>
+            </View>
+            <View style={styles.descripcionContainer}>
+                <Text style={styles.textLabel}>Imagen del Accidente</Text>
+                <Image source={{ uri: `data:image/jpg;base64,${parte.photo}` }} style={styles.logo} />
             </View>
         </View>
     )
@@ -36,7 +40,7 @@ const styles = StyleSheet.create({
         fontSize: 22,
         marginLeft: '5%',
         marginTop: '4%',
-        color:'black'
+        color: 'black'
     },
     input: {
         fontSize: 20,
@@ -47,5 +51,15 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         marginRight: '5%',
         textAlignVertical: 'top',
+    },
+    logo: {
+        height: '30%',
+        
+        // backgroundColor:'red',
+        // margin:'4%'
+    },
+    descripcionContainer:{
+        // backgroundColor:'red'a
+        
     }
 });
