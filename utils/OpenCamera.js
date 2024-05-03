@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Text, View, PermissionsAndroid, Platform } from "react-native";
+import { StyleSheet, Image,  View, PermissionsAndroid } from "react-native";
 import React, { useEffect, useState } from 'react'
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { launchImageLibrary } from "react-native-image-picker";

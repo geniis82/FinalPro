@@ -7,7 +7,7 @@ const SignatureScreen = () => {
     const [signature, setSign] = useState(null);
 
     const handleOK = (signature) => {
-        console.log(signature);
+        // console.log(signature);
         setSign(signature);
     };
 

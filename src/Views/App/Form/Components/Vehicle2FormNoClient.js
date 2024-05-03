@@ -11,6 +11,7 @@ import { ENDPOINT_partes } from '../../../../../utils/endpoints';
 import axios from 'axios';
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import Loader from '../../../../Components/Loader';
+import OpenCamera from '../../../../../utils/OpenCamera';
 
 const Vehicle2FormNoClient = () => {
 
@@ -26,6 +27,8 @@ const Vehicle2FormNoClient = () => {
     const [aseguradora, setAseguradora] = useState("");
     const [numPoliza, setNumPoliza] = useState("")
     const [loaded, setLoaded] = useState(false);
+    const [imgName, setImgName] = useState("")
+    const [poliza_ids, setPoliza_ids] = useState({})
 
     const navigation = useNavigation()
 
@@ -48,7 +51,7 @@ const Vehicle2FormNoClient = () => {
     }
 
     const save = async () => {
-        const updatedParte = { ...parte, client2: client2, vehiculo2: vehicle2 };
+        const updatedParte = { ...parte, client2: client2, vehiculo2: vehicle2, poliza_ids: poliza_ids };
         await AsyncStorage.setItem(StorageKeys.PARTE, JSON.stringify(updatedParte));
         setParte(updatedParte);
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
@@ -56,11 +59,11 @@ const Vehicle2FormNoClient = () => {
         axios.post(`${ENDPOINT_partes}/save.php`, {
             dni,
             token,
-            ...updatedParte
+            ...updatedParte,
         })
             .then(res => {
                 const parteData = res.data
-                console.log(parteData);
+                // console.log(parteData);
                 if (parteData.status) {
                     Alert.alert('Parte Enviado', 'El parte se ha enviado correctamente', [
                         {
@@ -83,10 +86,40 @@ const Vehicle2FormNoClient = () => {
             }).finally(() => setLoaded(true))
     };
 
+    const saveFoto = async ({ formData }) => {
+        // const p = await AsyncStorage.getItem(StorageKeys.PARTE)
+        // const storedParte = JSON.parse(p || '{}');
+        // // console.log(p);
+        // setParte(storedParte);
+
+        axios.post(
+            `${ENDPOINT_partes}/uploadParte.php`,
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            }
+        ).then(res => {
+            const imageData = res.data;
+            setImgName(imageData['image_url'])
+            const updatedParte = { ...parte, photo: imageData['image_url'] };
+            setParte(updatedParte);
+            // console.log(imageData['image_url']);
+        }).catch(error => {
+            console.error('Error al subir la imagen:', error);
+        });
+    }
+
     const handleOnChange = (e) => {
         const { id, value } = e.target;
         setVehcle2({ ...vehicle2, [id]: value })
         // console.log(parte);
+    }
+
+    const handlePol = (e) => {
+        const { id, value } = e.target;
+        setPoliza_ids({ ...poliza_ids, [id]: value })
     }
 
     const handleGoBack = () => {
@@ -94,6 +127,16 @@ const Vehicle2FormNoClient = () => {
     };
 
     // if (!loaded) return <Loader />
+
+    const handleLib = async ({ result }) => {
+        const formData = new FormData();
+        formData.append('file', {
+            uri: result?.assets[0]?.uri,
+            type: result?.assets[0]?.type,
+            name: result?.assets[0]?.fileName,
+        });
+        saveFoto({ formData })
+    }
 
     return (
         <ScrollView style={styles.container}>
@@ -104,9 +147,10 @@ const Vehicle2FormNoClient = () => {
                 <TextCustom label={'Modelo'} id={'modelo'} value={modelo} onChange={handleOnChange} placeholder={'Modelo'} />
             </View>
             <View >
-                <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora'} value={aseguradora} onChange={handleOnChange} placeholder={'Nombre de la aseguradora'} />
-                <TextCustom label={'Numero de poliza'} id={'numPoliza'} value={numPoliza} onChange={handleOnChange} placeholder={'Numero de poliza'} />
+                <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora'} value={aseguradora} onChange={handlePol} placeholder={'Nombre de la aseguradora'} />
+                <TextCustom label={'Numero de poliza'} id={'numPoliza'} value={numPoliza} onChange={handlePol} placeholder={'Numero de poliza'} />
             </View>
+            <OpenCamera handleLib={handleLib} />
             <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={handleGoBack} style={styles.button}>
                     <Icon name='arrow-back-circle' size={55} style={styles.textButton} />

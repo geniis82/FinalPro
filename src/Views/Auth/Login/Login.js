@@ -24,7 +24,7 @@ const Login = ({ navigation }) => {
     const handleCheckToken = async () => {
         const token = await getItemFromAsyncStorage(StorageKeys.USER_TOKEN)
         const dni = await getItemFromAsyncStorage(StorageKeys.USER_DNI)
-        console.log(token);
+        // console.log(token);
         if (token !== null) {
             axios.post(`${ENDPOINT_auth}/checkToken.php`, {
                 token
@@ -47,7 +47,7 @@ const Login = ({ navigation }) => {
             .then(async res => {
                 let userInfo = res.data;
                 if (userInfo.status) {
-                    console.log(userInfo);
+                    // console.log(userInfo);
                     await setItemOnAsyncStorage(StorageKeys.USER_TOKEN, userInfo.token)
                     await setItemOnAsyncStorage(StorageKeys.USER_DNI, username)
                     await setItemOnAsyncStorage(StorageKeys.USER_ID, userInfo.id)

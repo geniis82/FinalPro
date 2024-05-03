@@ -7,6 +7,7 @@ import RNHTMLtoPDF from 'react-native-html-to-pdf'
 import FileViewer from 'react-native-file-viewer'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { htmlContent } from '../../../Template/PdfTemplate';
+import { htmlContentNoCli } from '../../../Template/PdfTemplateNoClient';
 
 const ExportPdf = ({ parte }) => {
 
@@ -57,11 +58,21 @@ const ExportPdf = ({ parte }) => {
             return;
         }
         try {
-            const options = {
-                html: htmlContent(parte),
-                fileName: "Report",
-            };
-            const file = await RNHTMLtoPDF.convert(options);
+            let option={}
+            // console.log(parte);
+            if (parte.vehiculo2.poliza_ids.length===0) {
+                option = {
+                    html: htmlContentNoCli(parte),
+                    fileName: "Report",
+                }
+            } else {
+                option = {
+                    html: htmlContent(parte),
+                    fileName: "Report",
+                };
+                
+            }
+            const file = await RNHTMLtoPDF.convert(option);
             const finalPath = DownloadDirectoryPath + "/" + file.fileName + ".pdf"
             moveFile(file.filePath, finalPath)
                 .then(res => {
@@ -73,9 +84,7 @@ const ExportPdf = ({ parte }) => {
                 }).catch(err => {
                     console.error(err);
                 });
-
         } catch (error) {
-            console.error('Error al crear el PDF:', error);
             Alert.alert('Error al crear el PDF');
         }
     }
@@ -92,9 +101,9 @@ const ExportPdf = ({ parte }) => {
     }
 
     return (
-        <View style={{marginLeft:'69%',marginRight:'6%'}}>
+        <View style={{ marginLeft: '69%', marginRight: '6%' }}>
             <TouchableOpacity onPress={() => createPdf()} style={styles.button}>
-                <Text style={{marginTop:'10%',marginRight:'8%'}}>Descargar</Text>
+                <Text style={{ marginTop: '10%', marginRight: '8%' }}>Descargar</Text>
                 <Icon name='file-pdf' size={30} style={styles.textButton} />
             </TouchableOpacity>
         </View>

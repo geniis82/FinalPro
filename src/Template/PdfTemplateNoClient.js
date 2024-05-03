@@ -1,4 +1,4 @@
-export const htmlContent = (parte) => {
+export const htmlContentNoCli = (parte) => {
     return (
         `
         <html lang="en">
@@ -121,9 +121,8 @@ export const htmlContent = (parte) => {
                                 <td>${parte.client2.name + " " + parte.client1.surname}</td>
                                 <td>${parte.client2.tlf}</td>
                                 <td>${parte.vehiculo2.name}</td>
-                                <td>${parte.vehiculo2.poliza_ids.aseguradora_id[1]}</td>
-                                <td>${parte.vehiculo2.poliza_ids.name}</td>    
-                                
+                                <td>${parte.nameAsegurNoClien}</td>
+                                <td>${parte.numPoliNoClien}</td>    
                             </tr>
                         </table>
                         </div>

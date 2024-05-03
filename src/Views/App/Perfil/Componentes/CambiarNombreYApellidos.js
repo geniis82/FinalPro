@@ -64,7 +64,7 @@ const CambiarNombreYApellidos = () => {
             {
                 text: 'Cancelar',
                 style: 'cancel',
-                onPress: console.log(user)
+                // onPress: console.log(user)
             },
             { text: 'OK', onPress: () => handleGuardar() },
         ]);
@@ -83,7 +83,7 @@ const CambiarNombreYApellidos = () => {
         })
             .then(res => {
                 const userData = res.data
-                console.log(userData);
+                // console.log(userData);
                 if (userData.status) {
                     Alert.alert('Gurdado', "Los cambios han sido guardados", [
                         {

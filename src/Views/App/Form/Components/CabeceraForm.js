@@ -62,7 +62,7 @@ const CabeceraForm = () => {
     const handleSiguiente = async () => {
         await setParteOnAsyncStorage(StorageKeys.PARTE, JSON.stringify(parte));
         const p = await AsyncStorage.getItem(StorageKeys.PARTE);
-        console.log(p);
+        // console.log(p);
         navigation.navigate('UserForm');
     };
 

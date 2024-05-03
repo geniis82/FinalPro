@@ -36,7 +36,7 @@ const InfoVehiculoPoliza = ({ poliza, handleOnchange }) => {
             .then(res => {
                 const infoVehi = res.data
                 if (infoVehi.status) {
-                    console.log(infoVehi.vehicles);
+                    // console.log(infoVehi.vehicles);
                     setVehicle(infoVehi.vehicles)
                 } else {
                     console.log("no se pudo obtener los datos del usuario");

@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StorageKeys } from '../../../../utils/StorageKeys';
 import TextCustom from '../../../Components/TextCustom';
 import ExportPdf from '../ExportPdf/ExportPdf';
+import { View } from 'react-native';
 
 const InfoPartes = () => {
 
@@ -25,6 +26,7 @@ const InfoPartes = () => {
     }, [params])
 
     const fetchParte = async () => {
+        // console.log(params.id);
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
         axios.get(`${ENDPOINT_partes}/getInfo.php`, {
@@ -36,11 +38,11 @@ const InfoPartes = () => {
         })
             .then(res => {
                 const infoParte = res.data
-                console.log(infoParte);
+                // console.log(infoParte.status);
                 if (infoParte.status) {
                     setParte(infoParte.parte)
                 } else {
-                    console.log("no se pudo obtener los datos del usuario");
+                    console.log("no se pudo obtener los datos del usuario()info partes");
                 }
             })
             .catch(error => {
@@ -55,8 +57,8 @@ const InfoPartes = () => {
     if (!loaded) return <Loader />
 
     return (
-        <ScrollView style={{marginBottom:'4%'}}>
-            <ExportPdf parte={parte}/>
+        <ScrollView>
+            <ExportPdf parte={parte} />
             <CabeceraInfoPartes parte={parte} handleOnChange={handleOnChange} />
             <ParteVehiculo1 parte={parte} handleOnChange={handleOnChange} />
             <ParteVehiculo2 parte={parte} handleOnChange={handleOnChange} />

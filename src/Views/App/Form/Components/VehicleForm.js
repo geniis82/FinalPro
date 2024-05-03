@@ -50,10 +50,10 @@ const VehicleForm = () => {
         })
             .then(res => {
                 const vehicleData = res.data
-                console.log(vehicleData);
+                // console.log(vehicleData);
                 if (vehicleData.status) {
                     const vec = vehicleData.vehicles
-                    console.log(vec);
+                    // console.log(vec);
                     const vehiculosConPoliza = []
                     vec.map(function (item) {
                         if (item.options.poliza_ids.length !== 0) {
@@ -105,7 +105,7 @@ const VehicleForm = () => {
 
     const handleSiguiente = async () => {
         await setParteOnAsyncStorage(StorageKeys.PARTE, JSON.stringify(parte));
-        console.log(parte);
+        // console.log(parte);
         navigation.navigate('User2Form');
     };
 

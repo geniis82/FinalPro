@@ -60,7 +60,7 @@ const Vehicle2FormClient = () => {
         })
             .then(res => {
                 const parteData = res.data
-                console.log(parteData);
+                // console.log(parteData);
                 if (parteData.status) {
                     Alert.alert('Parte Eniado', 'El parte se ha enviado correctamente', [
                         {
@@ -89,6 +89,7 @@ const Vehicle2FormClient = () => {
         // const storedParte = JSON.parse(p || '{}');
         // // console.log(p);
         // setParte(storedParte);
+        
         axios.post(
             `${ENDPOINT_partes}/uploadParte.php`,
             formData,
@@ -98,7 +99,7 @@ const Vehicle2FormClient = () => {
                 },
             }
         ).then(res => {
-            const imageData = res.data;
+            const imageData = res.data;            
             setImgName(imageData['image_url'])
             const updatedParte = { ...parte, photo: imageData['image_url'] };
             setParte(updatedParte);
@@ -131,7 +132,7 @@ const Vehicle2FormClient = () => {
         })
             .then(res => {
                 const vehicleData = res.data
-                console.log(vehicleData);
+                // console.log(vehicleData);
                 if (vehicleData.status) {
                     const vec = vehicleData.vehicles
                     setVehicles(vec)
@@ -214,8 +215,8 @@ const Vehicle2FormClient = () => {
                     }
                     {!poliza &&
                         <View >
-                            <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} style={styles.input} readOnly={true} />
-                            <TextCustom label={'Numero de poliza'} id={'name'} style={styles.input} readOnly={true} />
+                            <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} style={styles.input}  />
+                            <TextCustom label={'Numero de poliza'} id={'name'} style={styles.input}  />
                             <OpenCamera handleLib={handleLib} />
                         </View>
 
@@ -247,7 +248,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         marginTop: '6%',
         marginBottom: '25%',
-
+        
     },
     button: {
         padding: '4%',

@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
                 setUserInfo(userInfo);
                 AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
                 setIsLoading(false);
-                console.log(userInfo);
+                // console.log(userInfo);
             })
             .catch(e => {
                 console.log(`register error ${e}`);
@@ -43,8 +43,8 @@ export const AuthProvider = ({ children }) => {
             })
             .then(res => {
                 let userInfo = res.data;
-                console.log(userInfo);
-                console.log("aaaaaa")
+                // console.log(userInfo);
+                // console.log("aaaaaa")
                 setUserInfo(userInfo);
                 AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
                 setIsLoading(false);
@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }) => {
                 },
             )
             .then(res => {
-                console.log(res.data);
+                // console.log(res.data);
                 AsyncStorage.removeItem('userInfo');
                 setUserInfo({});
                 setIsLoading(false);

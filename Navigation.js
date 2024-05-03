@@ -35,7 +35,7 @@ const MyDraws = () => {
 
     const fetchUser = async () => {
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
-        console.log(dni);
+        // console.log(dni);
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
         axios.get(`${ENDPOINT_user}/getUser.php`, {
             params: {

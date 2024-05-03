@@ -1,13 +1,16 @@
 import React from 'react'
 import {
     Image,
+    SafeAreaView,
     StyleSheet,
     Text,
     TextInput,
-    View
+    View,
+    ViewComponent
 } from 'react-native';
 import TextCustom from '../../../../Components/TextCustom';
 import moment from 'moment';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 const CabeceraInfoPartes = ({ parte, handleOnChange }) => {
@@ -15,7 +18,7 @@ const CabeceraInfoPartes = ({ parte, handleOnChange }) => {
 
 
     return (
-        <View >
+        <View style={styles.descripcionContainer}>
             <TextCustom label={'Fecha del Parte'} id={'dataParte'} value={moment(parte.dataParte).format("DD-MM-YYYY")} onChange={handleOnChange} readOnly={true} />
             <TextCustom label={'Localidad'} id={'location'} value={parte.location} onChange={handleOnChange} readOnly={true} />
             <TextCustom label={'Direccion'} id={'addres'} value={parte.addres} onChange={handleOnChange} readOnly={true} />
@@ -23,9 +26,9 @@ const CabeceraInfoPartes = ({ parte, handleOnChange }) => {
                 <Text style={styles.textLabel}>Descripcion</Text>
                 <TextInput style={styles.input} readOnly={true} multiline={true} numberOfLines={6}>{parte.descripcion}</TextInput>
             </View>
-            <View style={styles.descripcionContainer}>
+            <View style={styles.imageView}>
                 <Text style={styles.textLabel}>Imagen del Accidente</Text>
-                <Image source={{ uri: `data:image/jpg;base64,${parte.photo}` }} style={styles.logo} />
+                <Image source={{ uri: `data:image/jpg;base64,${parte.photo}` }} style={styles.logo}  resizeMode="contain"/>
             </View>
         </View>
     )
@@ -35,7 +38,6 @@ const CabeceraInfoPartes = ({ parte, handleOnChange }) => {
 export default CabeceraInfoPartes;
 
 const styles = StyleSheet.create({
-
     textLabel: {
         fontSize: 22,
         marginLeft: '5%',
@@ -53,13 +55,16 @@ const styles = StyleSheet.create({
         textAlignVertical: 'top',
     },
     logo: {
-        height: '30%',
-        
-        // backgroundColor:'red',
-        // margin:'4%'
+        flex: 1,
+        width: '100%',
+        height: '100%',
     },
-    descripcionContainer:{
-        // backgroundColor:'red'a
-        
+    descripcionContainer: {
+        // height: '60%',
+    },
+    imageView: {
+        height: 300, 
+        marginTop: '4%',
+        // backgroundColor:'blue'
     }
 });

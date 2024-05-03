@@ -52,7 +52,7 @@ const generateOptions = () => {
             .then(async res => {
                 let resp = res.data
                 if (resp.status) {
-                    console.log(res.data);
+                    // console.log(res.data);
                     await AsyncStorage.multiRemove(['userToken', 'dni', 'idUser', 'parte']);
                     navigate("Auth")
                 }
