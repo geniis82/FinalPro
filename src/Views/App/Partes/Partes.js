@@ -10,6 +10,7 @@ import { ENDPOINT_partes, ENDPOINT_user } from "../../../../utils/endpoints";
 import ListaPartes from "./ListaPartes";
 import InfoPartes from "./InfoPartes";
 import ExportPdf from "../ExportPdf/ExportPdf";
+import Form from "../Form/Form";
 
 
 
@@ -34,6 +35,9 @@ const Partes = () => {
             </Stack.Screen>
             <Stack.Screen name="Informacion del Parte" >
                 {()=> <InfoPartes/> }
+            </Stack.Screen>
+            <Stack.Screen name="Nuevo Parte" >
+                {()=> <Form/> }
             </Stack.Screen>
         </Stack.Navigator>
     )

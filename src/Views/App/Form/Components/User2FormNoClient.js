@@ -77,14 +77,14 @@ const User2FormNoClient = ({ flag }) => {
                 </View>
             </View>
             <TextCustom label={'Correo Electronico'} id={'email'} value={email} placeholder={"Introduzca correo electronico"} onChange={handleOnChangeNoUser} />
-            <View style={styles.buttonContainer}>
+            {/* <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={handleGoBack} style={styles.button}>
                     <Icon name='arrow-back-circle' size={55} style={styles.textButton} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
                     <Icon name='arrow-forward-circle' size={55} style={styles.textButton} />
                 </TouchableOpacity>
-            </View>
+            </View> */}
         </View>
     )
 }
@@ -92,14 +92,13 @@ export default User2FormNoClient
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: '5%',
-        paddingBottom: '5%'
+        maxHeight: '79%',
+        minHeight: '79%',
+        marginBottom:'4%'
     },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        marginTop: '6%',
-        
     },
     button: {
         padding: '4%',

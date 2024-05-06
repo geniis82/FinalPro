@@ -69,62 +69,44 @@ const UserForm = () => {
 
     if (!loaded) return <Loader />
     return (
-        <ScrollView style={styles.container}>
-            <Text style={{ fontSize: 40, marginLeft: '4%' }}>Usuario A</Text>
-
-            <TextCustom label={'Nombre'} id={'name'} value={user.name}  readOnly={true} />
-            <TextCustom label={'Apellidos'} id={'surname'} value={user.surname}  readOnly={true} />
-            <TextCustom label={'Telefono'} id={'tlf'} value={user.tlf}  readOnly={true} />
-            <TextCustom label={'Fecha de nacimiento'} id={'dateBirth'} value={moment(user.dateBirth).format("DD-MM-YYYY")} readOnly={true}  />
-            <TextCustom label={'Correo Electronico'} id={'email'} value={user.email}  readOnly={true} />
+        <View>
+            <ScrollView style={styles.container}>
+                <Text style={{ fontSize: 40, marginLeft: '4%' }}>Usuario A</Text>
+                <TextCustom label={'Nombre'} id={'name'} value={user.name} readOnly={true} />
+                <TextCustom label={'Apellidos'} id={'surname'} value={user.surname} readOnly={true} />
+                <TextCustom label={'Telefono'} id={'tlf'} value={user.tlf} readOnly={true} />
+                <TextCustom label={'Fecha de nacimiento'} id={'dateBirth'} value={moment(user.dateBirth).format("DD-MM-YYYY")} readOnly={true} />
+                <TextCustom label={'Correo Electronico'} id={'email'} value={user.email} readOnly={true} />
+            </ScrollView >
             <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={handleGoBack} style={styles.button}>
                     <Icon name='arrow-back-circle' size={55} style={styles.textButton} />
-                    {/* <Text style={styles.textButton}>Atras</Text> */}
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
                     <Icon name='arrow-forward-circle' size={55} style={styles.textButton} />
-                    {/* <Text style={styles.textButton}>Siguiente</Text> */}
                 </TouchableOpacity>
             </View>
-        </ScrollView >
+        </View>
     )
 }
 
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: '5%',
-        paddingBottom: '5%'
+        maxHeight:'88%',
+        minHeight:'88%'
     },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        marginTop: '6%',
-        marginBottom: '25%',
-
     },
     button: {
         padding: '4%',
-
     },
     textButton: {
         textAlign: 'center',
         color: '#9a89c0',
-        marginTop: '5%',
     },
-    input: {
-        // marginTop: '2%',
-        fontSize: 20,
-        marginLeft: '3%',
-        borderWidth: 1,
-        paddingStart: '5%',
-        borderColor: 'black',
-        borderRadius: 15,
-        marginRight: '5%',
-        // textAlignVertical: 'top',
-    }
-
 });
 
 export default UserForm;

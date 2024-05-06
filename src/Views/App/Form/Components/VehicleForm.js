@@ -113,84 +113,68 @@ const VehicleForm = () => {
         navigation.goBack();
     };
     return (
-        <ScrollView style={styles.container}>
+        <View>
+
             <Text style={{ fontSize: 40, marginLeft: '4%' }}>Vehiculo A</Text>
-            <DropDownPicker
-                listMode='SCROLLVIEW'
-                placeholder='Seleccione un vehiculo'
-                placeholderStyle={{ fontSize: 20 }}
-                open={open}
-                value={value}
-                items={vehicles}
-                setOpen={setOpen}
-                setValue={setValue}
-                setItems={setVehicles}
-                onChangeValue={handleDropDown}
-                maxHeight={100}
-                style={{ marginLeft: '4%', marginTop: '4%', width: '90%' }}
-                dropDownContainerStyle={{ marginLeft: '4%', marginTop: '4%', width: '89.5%' }}
-            />
-            {vehicleSec &&
-                <View style={{ paddingTop: '4%' }}>
-                    <TextCustom label={'Matricula'} id={'matricula'} value={vehicleSec.label}  readOnly={true}/>
-                    <TextCustom label={'Marca'} id={'marca'} value={vehicleSec.options.marca}  readOnly={true}/>
-                    <TextCustom label={'Modelo'} id={'modelo'} value={vehicleSec.options.modelo}  readOnly={true}/>
-                </View>
-            }
-            {poliza &&
+            <ScrollView style={styles.container}>
+                <DropDownPicker
+                    listMode='SCROLLVIEW'
+                    placeholder='Seleccione un vehiculo'
+                    placeholderStyle={{ fontSize: 20 }}
+                    open={open}
+                    value={value}
+                    items={vehicles}
+                    setOpen={setOpen}
+                    setValue={setValue}
+                    setItems={setVehicles}
+                    onChangeValue={handleDropDown}
+                    style={{ marginLeft: '4%', marginTop: '4%', width: '90%' }}
+                    dropDownContainerStyle={{ marginLeft: '4%', marginTop: '4%', width: '89.5%' }}
+                />
+                {vehicleSec  && poliza &&
                 <View>
-                    <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} value={poliza.aseguradora_id[1]} readOnly={true} />
-                    <TextCustom label={'Numero de poliza'} id={'name'} value={poliza.name}  readOnly={true}/>
+                    <View >
+                        <TextCustom label={'Matricula'} id={'matricula'} value={vehicleSec.label} readOnly={true} />
+                        <TextCustom label={'Marca'} id={'marca'} value={vehicleSec.options.marca} readOnly={true} />
+                        <TextCustom label={'Modelo'} id={'modelo'} value={vehicleSec.options.modelo} readOnly={true} />
+                    </View>
+                    <View>
+                        <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} value={poliza.aseguradora_id[1]} readOnly={true} />
+                        <TextCustom label={'Numero de poliza'} id={'name'} value={poliza.name} readOnly={true} />
+                    </View>
                 </View>
-            }
+                }
+            </ScrollView>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={handleGoBack} style={styles.button}>
                     <Icon name='arrow-back-circle' size={55} style={styles.textButton} />
-                    {/* <Text style={styles.textButton}>Atras</Text> */}
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
                     <Icon name='arrow-forward-circle' size={55} style={styles.textButton} />
-                    {/* <Text style={styles.textButton}>Siguiente</Text> */}
                 </TouchableOpacity>
             </View>
-        </ScrollView>
+        </View>
     )
 
 }
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: '5%',
-        paddingBottom: '5%'
+        maxHeight: '79%',
+        minHeight: '79%',
+        marginBottom:'4%'
     },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        marginTop: '6%',
-        marginBottom: '25%',
-
     },
     button: {
         padding: '4%',
-
     },
     textButton: {
         textAlign: 'center',
         color: '#9a89c0',
-        marginTop: '5%'
     },
-
-    input: {
-        // marginTop: '2%',
-        fontSize: 20,
-        marginLeft: '3%',
-        borderWidth: 1,
-        paddingStart: '5%',
-        borderColor: 'black',
-        borderRadius: 15,
-        marginRight: '5%',
-        // textAlignVertical: 'top',
-    }
 });
 
 export default VehicleForm;

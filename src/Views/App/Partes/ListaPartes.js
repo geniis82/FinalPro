@@ -5,10 +5,10 @@ import axios from "axios"
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { StorageKeys } from "../../../../utils/StorageKeys";
 import { Paths } from "../../../../utils/paths";
-import { StackView, createStackNavigator } from "@react-navigation/stack";
 import { ENDPOINT_partes, ENDPOINT_user } from "../../../../utils/endpoints";
 import moment from "moment";
-import ExportPdf from "../ExportPdf/ExportPdf";
+import Icon from 'react-native-vector-icons/Ionicons';
+import { ScreensPaths } from "../../../../utils/ScreensPaths";
 
 
 
@@ -20,7 +20,7 @@ const ListaPartes = () => {
     const [selectedId, setSelectedId] = useState();
     const { navigate } = useNavigation();
 
-
+    const navigation = useNavigation()
 
     useFocusEffect(
         useCallback(() => {
@@ -53,11 +53,15 @@ const ListaPartes = () => {
             }).finally(() => setLoaded(true));
     }
 
+    const handleNewParte = () => {
+        navigate(Paths.parte)
+    }
+
 
 
     const handleManageItem = (id) => {
         navigate(Paths.parts_info, {
-            id:id,
+            id: id,
         })
     }
 
@@ -93,14 +97,16 @@ const ListaPartes = () => {
         )
     } else {
         return (
-            <SafeAreaView>
-                
+            <SafeAreaView style={{ flex: 1 }}>
                 <FlatList
                     data={partes}
                     renderItem={renderItem}
                     keyExtractor={item => item.id}
                     extraData={selectedId}
                 />
+                <TouchableOpacity onPress={handleNewParte} style={styles.button}>
+                    <Icon name='add-circle' size={70} style={styles.textButton} reverse />
+                </TouchableOpacity>
             </SafeAreaView>
         )
     }
@@ -124,6 +130,15 @@ const styles = StyleSheet.create({
     noParte: {
         textAlign: 'center',
         paddingTop: '66%'
+    },
+    textButton: {
+        position: 'absolute',
+        bottom: 40,
+        color: '#9a89c0',
+        right: 30,
+        shadowColor: 'black',
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 0.5
     }
 });
 

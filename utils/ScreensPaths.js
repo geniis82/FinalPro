@@ -16,12 +16,12 @@ export const ScreensPaths = [
         name: 'Mis Partes',
         iconName:'home-outline'
     },
-    {
-        title: 'Form',
-        component: Form,
-        name: 'Parte',
-        iconName:'document-outline'
-    },
+    // {
+    //     title: 'Form',
+    //     component: Form,
+    //     name: 'Parte',
+    //     iconName:'document-outline'
+    // },
     {
         title: 'Polizas',
         component: Polizas,

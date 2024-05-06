@@ -20,6 +20,8 @@ import { TextInput } from 'react-native';
 const CabeceraForm = () => {
 
     const navigation = useNavigation()
+    const [loaded, setLoaded] = useState(false);
+
 
     const [parte, setParte] = useState({
         dataParte: moment().format('YYYY-MM-DD'), // Incluye la fecha del parte en el estado inicial
@@ -27,6 +29,7 @@ const CabeceraForm = () => {
         addres: '',
         descripcion: ''
     });
+
 
 
     useFocusEffect(
@@ -40,6 +43,7 @@ const CabeceraForm = () => {
     // }, []);
 
     const cleanParte = async () => {
+        setLoaded(true)
         await AsyncStorage.removeItem(StorageKeys.PARTE)
         await AsyncStorage.removeItem(StorageKeys.DNI_SCANNED)
         setParte(prevParte => ({
@@ -66,56 +70,58 @@ const CabeceraForm = () => {
         navigation.navigate('UserForm');
     };
 
+    if (!loaded) return null;
 
     return (
-        <ScrollView style={styles.container}>
-            <TextCustom label={'Fecha del Parte'} id={'dataParte'} value={moment().format('DD-MM-YYYY')} readOnly={true} onChange={handleOnChange} />
-            <TextCustom label={'Localidad'} id={'location'} onChange={handleOnChange} value={parte.location} placeholder={'Localidad'} />
-            <TextCustom label={'Dirección'} id={'addres'} onChange={handleOnChange} value={parte.addres} placeholder={'Dirección'} />
-            <TextCustom
-                label={'Descripción del accidente'}
-                id={'descripcion'}
-                value={parte.descripcion}
-                onChange={handleOnChange}
-                multiline={true}
-                num={8}
-                placeholder={'Descripción del accidente'}
-                style={styles.input}
-            />
-            {/* <View>
+        <View>
+
+            <ScrollView style={styles.container}>
+                <TextCustom label={'Fecha del Parte'} id={'dataParte'} value={moment().format('DD-MM-YYYY')} readOnly={true} onChange={handleOnChange} />
+                <TextCustom label={'Localidad'} id={'location'} onChange={handleOnChange} value={parte.location} placeholder={'Localidad'} />
+                <TextCustom label={'Dirección'} id={'addres'} onChange={handleOnChange} value={parte.addres} placeholder={'Dirección'} />
+                <TextCustom
+                    label={'Descripción del accidente'}
+                    id={'descripcion'}
+                    value={parte.descripcion}
+                    onChange={handleOnChange}
+                    multiline={true}
+                    num={8}
+                    placeholder={'Descripción del accidente'}
+                    style={styles.input}
+                />
+                {/* <View>
                 <Text style={styles.textLabel}>Descripción del accidente</Text>
                 <TextInput style={styles.input} id={'description'} placeholder={'Descripción del accidente'} onChangeText={handleOnChange} multiline={true} numberOfLines={8} >{parte.descripcion}</TextInput>
             </View> */}
-            <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
-                <Icon name='arrow-forward-circle' size={55} style={styles.textButton} />
-            </TouchableOpacity>
-        </ScrollView>
+
+            </ScrollView>
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
+                    <Icon name='arrow-forward-circle' size={55} style={styles.textButton} />
+                </TouchableOpacity>
+            </View>
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: '5%',
         paddingBottom: '5%',
     },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        marginTop: '6%',
-        marginBottom: '25%',
-
+        paddingBottom:'10%',
+        marginBottom:'20%',
     },
     button: {
-        paddingBottom: '4%',
-        // backgroundColor:'red',
-        marginLeft: '40%',
-        marginRight: '40%',
-        marginTop: '4%'
+        padding: '4%',
     },
     textButton: {
         textAlign: 'center',
         color: '#9a89c0',
-        marginTop: '5%'
+        marginTop: '5%',
+        position: 'absolute',
     },
     input: {
         fontSize: 20,

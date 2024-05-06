@@ -26,9 +26,11 @@ const User2Form = () => {
     const [flag, setFlag] = useState("0")
     const [disable, setDisable] = useState(false)
 
+    const [client2, setClient2] = useState({});
     const [dniScanned, setDniScanned] = useState("")
 
     const navigation = useNavigation();
+
 
     useFocusEffect(
         useCallback(() => {
@@ -94,8 +96,9 @@ const User2Form = () => {
     const filterUser = () => {
         setDisable(true)
         const user = users.find((item) => item.options.dni === search);
+        // console.log(user.options['isClient']);
         if (user === undefined) {
-            setFlag('1');
+            setFlag("1");
             Alert.alert('Error', 'Usuario no encontrado', [
                 {
                     text: 'Cancelar',
@@ -103,7 +106,12 @@ const User2Form = () => {
                 },
             ]);
         } else {
-            setFlag('2');
+            if (user.options['isClient']) {
+                setFlag("2");
+                console.log('hii');
+            } else {
+                setFlag("3")
+            }
             setUserSec(user);
             setUser2ID(user.value);
             const updatedParte = { ...parte, client2: user.value };
@@ -135,9 +143,18 @@ const User2Form = () => {
         await AsyncStorage.removeItem(StorageKeys.DNI_SCANNED)
         navigation.goBack();
     };
+    const handleSiguiente = async () => {
+        if(+flag === 2 || +flag === 3){
+            await AsyncStorage.setItem(StorageKeys.PARTE, JSON.stringify(parte))
+            navigation.navigate('Vehicle2Form', { userSec, flag });
+        }else{
+            navigation.navigate('Vehicle2Form', { client2, flag });
+
+        }
+    }
 
     return (
-        <ScrollView style={styles.container}>
+        <View>
             <Text style={{ fontSize: 40, marginLeft: '4%' }}>Usuario B</Text>
             <View style={styles.searchBar}>
                 <TextInput style={styles.searchInput} value={search} onChangeText={handleOnChange} placeholder={"Buscar dni"} />
@@ -150,34 +167,39 @@ const User2Form = () => {
                     </TouchableOpacity>
                 </View>
             </View>
-            {+flag === 2 &&
-                <User2FormClient userSec={userSec} flag={flag} parte={parte} />
-            }
-            {+flag === 1 &&
-                <User2FormNoClient flag={flag} />
-            }
+            <ScrollView style={styles.container}>
+                {(+flag === 2 || +flag === 3) &&
+                    <User2FormClient userSec={userSec} flag={flag} parte={parte} />
+                }
+                {+flag === 1 &&
+                    <User2FormNoClient flag={flag} />
+                }
+            </ScrollView>
             <View style={styles.buttonContainer}>
-                {!disable &&
-                    <TouchableOpacity onPress={handleGoBack} style={styles.button}>
-                        <Icon name='arrow-back-circle' size={55} style={styles.textButton} />
+                <TouchableOpacity onPress={handleGoBack} style={styles.button}>
+                    <Icon name='arrow-back-circle' size={55} style={styles.textButton} />
+                </TouchableOpacity>
+                {disable &&
+                    <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
+                        <Icon name='arrow-forward-circle' size={55} style={styles.textButton} />
                     </TouchableOpacity>
                 }
             </View>
-        </ScrollView>
+        </View >
     )
 
 }
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: '5%',
-        paddingBottom: '5%'
+        maxHeight: '65%',
+        minHeight: '65%',
+        marginBottom: '4%'
     },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        marginTop: '6%',
-        marginBottom: '25%',
+        // backgroundColor:'red'
     },
     searchInput: {
         borderWidth: 1,

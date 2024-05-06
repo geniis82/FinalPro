@@ -10,13 +10,13 @@ import { StorageKeys } from '../../../../../utils/StorageKeys';
 
 
 
-const User2FormClient = ({ userSec,flag,parte }) => {
+const User2FormClient = ({ userSec, flag, parte }) => {
 
     const navigation = useNavigation()
 
     const handleSiguiente = async () => {
-        await AsyncStorage.setItem(StorageKeys.PARTE,JSON.stringify(parte))
-        navigation.navigate('Vehicle2Form',{userSec,flag});
+        await AsyncStorage.setItem(StorageKeys.PARTE, JSON.stringify(parte))
+        navigation.navigate('Vehicle2Form', { userSec, flag });
     }
 
     const handleGoBack = async () => {
@@ -35,20 +35,20 @@ const User2FormClient = ({ userSec,flag,parte }) => {
                 />
             </View>
             <View >
-                <TextCustom label={'Nombre'} id={'name'} value={userSec ? userSec.options.name : ''} placeholder={"Introduzca nombre"} readOnly={true} style={styles.input}/>
-                <TextCustom label={'Apellidos'} id={'surname'} value={userSec ? userSec.options.surname : ''} placeholder={"Introduzca apellidos"} readOnly={true} style={styles.input}/>
-                <TextCustom label={'Telefono'} id={'phone'} value={userSec ? userSec.options.tlf : ''} placeholder={"Introduzca telefono"} readOnly={true} style={styles.input}/>
-                <TextCustom label={'Fecha de Nacimiento'} id={'dateBirth'} value={userSec ? userSec.options.dateBirth : ''} placeholder={"Introduzca fecha de nacimiento"} readOnly={true} style={styles.input}/>
-                <TextCustom label={'Correo Electronico'} id={'email'} value={userSec ? userSec.options.email : ''} placeholder={"Introduzca correo electronico"} readOnly={true} style={styles.input}/>
+                <TextCustom label={'Nombre'} id={'name'} value={userSec ? userSec.options.name : ''} placeholder={"Introduzca nombre"} readOnly={true} style={styles.input} />
+                <TextCustom label={'Apellidos'} id={'surname'} value={userSec ? userSec.options.surname : ''} placeholder={"Introduzca apellidos"} readOnly={true} style={styles.input} />
+                <TextCustom label={'Telefono'} id={'phone'} value={userSec ? userSec.options.tlf : ''} placeholder={"Introduzca telefono"} readOnly={true} style={styles.input} />
+                <TextCustom label={'Fecha de Nacimiento'} id={'dateBirth'} value={userSec ? userSec.options.dateBirth : ''} placeholder={"Introduzca fecha de nacimiento"} readOnly={true} style={styles.input} />
+                <TextCustom label={'Correo Electronico'} id={'email'} value={userSec ? userSec.options.email : ''} placeholder={"Introduzca correo electronico"} readOnly={true} style={styles.input} />
             </View>
-            <View style={styles.buttonContainer}>
+            {/* <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={handleGoBack} style={styles.button}>
                     <Icon name='arrow-back-circle' size={55} style={styles.textButton} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
                     <Icon name='arrow-forward-circle' size={55} style={styles.textButton} />
                 </TouchableOpacity>
-            </View>
+            </View> */}
         </ScrollView>
     )
 }
@@ -56,14 +56,13 @@ export default User2FormClient
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: '5%',
-        paddingBottom: '5%'
+        maxHeight: '79%',
+        minHeight: '79%',
+        marginBottom: '4%'
     },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        marginTop: '6%',
-        marginBottom: '25%',
     },
     button: {
         padding: '4%',
@@ -71,9 +70,8 @@ const styles = StyleSheet.create({
     textButton: {
         textAlign: 'center',
         color: '#9a89c0',
-        marginTop: '5%',
     },
-    
+
     searchInput: {
         marginLeft: '3%',
         borderWidth: 1,
@@ -100,13 +98,13 @@ const styles = StyleSheet.create({
     },
     input: {
         // marginTop: '2%',
-        fontSize:20,
+        fontSize: 20,
         marginLeft: '3%',
         borderWidth: 1,
         paddingStart: '5%',
         borderColor: 'black',
         borderRadius: 15,
-        marginRight:'5%',
+        marginRight: '5%',
         // textAlignVertical: 'top',
     }
 });

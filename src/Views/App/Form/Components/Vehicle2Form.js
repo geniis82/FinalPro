@@ -13,6 +13,7 @@ import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Vehicle2FormClient from './Vehicle2FormClient';
 import Vehicle2FormNoClient from './Vehicle2FormNoClient';
+import Vehicle2FormNoClientNotNew from './Vehicle2FormNoClientNotNew';
 
 
 const Vehicle2Form = () => {
@@ -25,7 +26,7 @@ const Vehicle2Form = () => {
     const [loaded, setLoaded] = useState(true);
 
 
-    // console.log(flag);
+    console.log(flag);
 
     if (!loaded) return <Loader />
 
@@ -38,7 +39,9 @@ const Vehicle2Form = () => {
             {+flag === 1 &&
                 <Vehicle2FormNoClient />
             }
-
+            {+flag === 3 &&
+                <Vehicle2FormNoClientNotNew />
+            }
         </View>
     )
 
