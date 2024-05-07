@@ -51,7 +51,7 @@ const Vehicle2FormNoClientNotNew = () => {
     const handleDropDown = () => {
         const itemSelect = vehicles.find(item => item.value === value);
         setVehicleSec(itemSelect);
-        console.log(itemSelect);
+        // console.log(itemSelect);
         // fetchAseguradora();
         setParte(prevState => ({
             ...prevState,
@@ -153,7 +153,7 @@ const Vehicle2FormNoClientNotNew = () => {
         })
             .then(res => {
                 const vehicleData = res.data
-                console.log(vehicleData);
+                // console.log(vehicleData);
                 if (vehicleData.status) {
                     const vec = vehicleData.vehicles
                     // console.log(vec);

@@ -13,8 +13,11 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import User2FormClient from './User2FormClient';
 import User2FormNoClient from './User2FormNoClient';
+import moment from 'moment';
 
 const User2Form = () => {
+    // const route = useRoute()
+    // const { client2 } = route.params
 
     const [acceptedPermission, setAcceptedPermissions] = useState(false);
     const [loaded, setLoaded] = useState(false);
@@ -25,6 +28,8 @@ const User2Form = () => {
     const [search, setSearch] = useState("")
     const [flag, setFlag] = useState("0")
     const [disable, setDisable] = useState(false)
+    const [dateBirth, setDatebirth] = useState('');
+    const [open, setOpen] = useState(false);
 
     const [client2, setClient2] = useState({});
     const [dniScanned, setDniScanned] = useState("")
@@ -47,7 +52,19 @@ const User2Form = () => {
         }
     }, [dniScanned]);
 
+    const handleOnChangeNoUser = (e) => {
+        const { id, value } = e.target;
+        setClient2({ ...client2, [id]: value })
+    }
+
+    const handleDateChange = (date) => {
+        setOpen(false);
+        setDatebirth(moment(date).format('YYYY-MM-DD'));
+        setClient2({ ...client2, dateBirth: moment(date).format('YYYY-MM-DD') });
+    };
+
     const cleanScan = async () => {
+        setDatebirth("")
         await AsyncStorage.removeItem(StorageKeys.DNI_SCANNED)
     }
 
@@ -108,7 +125,7 @@ const User2Form = () => {
         } else {
             if (user.options['isClient']) {
                 setFlag("2");
-                console.log('hii');
+                // console.log('hii');
             } else {
                 setFlag("3")
             }
@@ -144,11 +161,12 @@ const User2Form = () => {
         navigation.goBack();
     };
     const handleSiguiente = async () => {
-        if(+flag === 2 || +flag === 3){
+        if (+flag === 1) {
+            // console.log(client2);
+            navigation.navigate('Vehicle2Form', { client2, flag });
+        } else {
             await AsyncStorage.setItem(StorageKeys.PARTE, JSON.stringify(parte))
             navigation.navigate('Vehicle2Form', { userSec, flag });
-        }else{
-            navigation.navigate('Vehicle2Form', { client2, flag });
 
         }
     }
@@ -172,15 +190,15 @@ const User2Form = () => {
                     <User2FormClient userSec={userSec} flag={flag} parte={parte} />
                 }
                 {+flag === 1 &&
-                    <User2FormNoClient flag={flag} />
+                    <User2FormNoClient handleDateChange={handleDateChange} handleOnChangeNoUser={handleOnChangeNoUser} dateBirth={dateBirth}/>
                 }
             </ScrollView>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={handleGoBack} style={styles.button}>
+                <TouchableOpacity onPress={handleGoBack} style={styles.buttonNext}>
                     <Icon name='arrow-back-circle' size={55} style={styles.textButton} />
                 </TouchableOpacity>
                 {disable &&
-                    <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
+                    <TouchableOpacity onPress={handleSiguiente} style={styles.buttonNext}>
                         <Icon name='arrow-forward-circle' size={55} style={styles.textButton} />
                     </TouchableOpacity>
                 }
@@ -192,13 +210,13 @@ const User2Form = () => {
 
 const styles = StyleSheet.create({
     container: {
-        maxHeight: '65%',
-        minHeight: '65%',
-        marginBottom: '4%'
+        maxHeight: '70%',
+        minHeight: '70%',
     },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
+        marginLeft: '4%'
         // backgroundColor:'red'
     },
     searchInput: {
@@ -217,9 +235,9 @@ const styles = StyleSheet.create({
         width: '150%'
     },
     textButton: {
-        textAlign: 'justify',
+        textAlign: 'center',
         color: '#9a89c0',
-        marginTop: '5%',
+        marginTop: '10%',
     },
     button1: {
         width: '150%',
@@ -234,9 +252,13 @@ const styles = StyleSheet.create({
     searchBar: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignContent: 'space-between',
-        padding: 20,
+        paddingLeft: 12,
+        paddingBottom: 20,
+        paddingRight: 20,
         borderRadius: 100,
+    },
+    buttonNext: {
+        padding: '4%'
     }
 });
 

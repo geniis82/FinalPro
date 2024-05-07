@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
                 setIsLoading(false);
             })
             .catch(e => {
-                console.log("dasdfasd")
+                // console.log("dasdfasd")
                 console.log(`login error ${e}`);
                 setIsLoading(false);
             });

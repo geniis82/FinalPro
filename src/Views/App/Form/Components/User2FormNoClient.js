@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
-import { View, StyleSheet, Alert, Switch } from 'react-native';
+import { View, StyleSheet, Alert, Switch, TextInput } from 'react-native';
 import { Button, Text } from 'react-native-elements';
 import TextCustom from '../../../../Components/TextCustom';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -10,36 +10,15 @@ import moment from 'moment'
 import { useNavigation } from '@react-navigation/native';
 
 
-const User2FormNoClient = ({ flag }) => {
+const User2FormNoClient = ({ handleDateChange,handleOnChangeNoUser,dateBirth}) => {
 
-    const navigation = useNavigation()
+    // const navigation = useNavigation()
     const [open, setOpen] = useState(false);
     const [dni, setDni] = useState('');
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
     const [telefono, setTelefono] = useState('');
-    const [dateBirth, setDatebirth] = useState('');
     const [email, setEmail] = useState('');
-    const [client2, setClient2] = useState({});
-
-    const handleOnChangeNoUser = (e) => {
-        const { id, value } = e.target;
-        setClient2({ ...client2, [id]: value })
-    }
-
-    const handleDateChange = (date) => {
-        setOpen(false);
-        setDatebirth(moment(date).format('YYYY-MM-DD'));
-        setClient2({ ...client2, dateBirth: moment(date).format('YYYY-MM-DD') });
-    };
-
-    const handleGoBack = () => {
-        navigation.goBack();
-    };
-
-    const handleSiguiente = async () => {
-        navigation.navigate('Vehicle2Form', { client2, flag });
-    }
 
     return (
         <View >
@@ -56,7 +35,7 @@ const User2FormNoClient = ({ flag }) => {
             <TextCustom label={'Nombre'} id={'name'} value={name} placeholder={"Introduzca nombre"} onChange={handleOnChangeNoUser} />
             <TextCustom label={'Apellidos'} id={'surname'} value={surname} placeholder={"Introduzca apellidos"} onChange={handleOnChangeNoUser} />
             <TextCustom label={'Telefono'} id={'phone'} value={telefono} placeholder={"Introduzca telefono"} onChange={handleOnChangeNoUser} keyboardType={'numeric'} maxLength={9} />
-            <View >
+            <View>
                 <DatePicker
                     modal
                     title={"Seleccione fecha"}
@@ -69,33 +48,24 @@ const User2FormNoClient = ({ flag }) => {
                     onConfirm={handleDateChange}
                     onCancel={() => setOpen(false)}
                 />
-                <View style={{ flexDirection: 'row' ,justifyContent:'space-between'}}>
-                    <TextCustom  label={'Fecha de Nacimiento'} id={'dateBirth'} value={moment(dateBirth).format("DD-MM-YYYY")} placeholder={"Seleccione fecha"} readOnly={true} />
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginLeft: '1%' }}>
+                    <View>
+                        <Text style={styles.textLabel}>Fecha de Nacimiento</Text>
+                        <TextInput style={styles.input} id={'dateBirth'} placeholder={"Seleccione fecha"} readOnly={true}>{moment(dateBirth).format("DD-MM-YYYY")}</TextInput>
+                    </View>
+                    {/* <TextCustom label={'Fecha de Nacimiento'} id={'dateBirth'} value={moment(dateBirth).format("DD-MM-YYYY")} placeholder={"Seleccione fecha"} readOnly={true} /> */}
                     <TouchableOpacity onPress={() => setOpen(true)}>
                         <Icon name='calendar' size={45} style={styles.textButtonCal} />
                     </TouchableOpacity>
                 </View>
             </View>
             <TextCustom label={'Correo Electronico'} id={'email'} value={email} placeholder={"Introduzca correo electronico"} onChange={handleOnChangeNoUser} />
-            {/* <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={handleGoBack} style={styles.button}>
-                    <Icon name='arrow-back-circle' size={55} style={styles.textButton} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleSiguiente} style={styles.button}>
-                    <Icon name='arrow-forward-circle' size={55} style={styles.textButton} />
-                </TouchableOpacity>
-            </View> */}
         </View>
     )
 }
 export default User2FormNoClient
 
 const styles = StyleSheet.create({
-    container: {
-        maxHeight: '79%',
-        minHeight: '79%',
-        marginBottom:'4%'
-    },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
@@ -103,17 +73,13 @@ const styles = StyleSheet.create({
     button: {
         padding: '4%',
     },
-    textButton: {
-        textAlign: 'center',
-        color: '#9a89c0',
-        marginTop: '5%',
-    },
     textButtonCal: {
         textAlign: 'center',
         color: '#9a89c0',
         marginTop: '56%',
         // backgroundColor:'blue',
-        marginRight:'7%'
+        marginRight: '7%',
+        width: '60%'
     },
     searchInput: {
         marginLeft: '3%',
@@ -135,11 +101,32 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignContent: 'center',
-        padding: '3%',
+        // padding: '3%',
+        paddingLeft: '3%',
+        paddingRight: '3%',
         borderRadius: 100
     },
     input: {
-        // marginTop: '2%',
+        backgroundColor: 'red',
+        width: '75%'
+    },
+    inputCalendar: {
+        fontSize: 20,
+        marginLeft: '6%',
+        borderWidth: 1,
+        paddingStart: '5%',
+        borderColor: 'black',
+        borderRadius: 15,
+        marginRight: '5%',
+        width: '130%'
+    },
+    textLabel: {
+        fontSize: 22,
+        marginLeft: '5%',
+        marginTop: '4%'
+    },
+    input: {
+        marginTop: '2%',
         fontSize:20,
         marginLeft: '3%',
         borderWidth: 1,
@@ -148,15 +135,6 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         marginRight:'5%',
         // textAlignVertical: 'top',
-    },
-    inputCalendar: {
-        fontSize:20,
-        marginLeft: '6%',
-        borderWidth: 1,
-        paddingStart: '5%',
-        borderColor: 'black',
-        borderRadius: 15,
-        marginRight:'5%',
         width:'130%'
     }
 });

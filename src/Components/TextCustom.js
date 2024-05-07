@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     textLabel: {
         fontSize: 22,
         marginLeft: '5%',
-        marginTop: '4%'
+        marginTop: '2%'
     },
     input: {
         marginTop: '2%',
@@ -39,5 +39,6 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         marginRight:'5%',
         // textAlignVertical: 'top',
+        
     }
 });

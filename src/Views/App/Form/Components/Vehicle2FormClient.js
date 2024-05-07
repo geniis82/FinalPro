@@ -98,8 +98,10 @@ const Vehicle2FormClient = () => {
                     'Content-Type': 'multipart/form-data',
                 },
             }
+            
         ).then(res => {
-            const imageData = res.data;            
+            const imageData = res.data;  
+            console.log(res.data);          
             setImgName(imageData['image_url'])
             const updatedParte = { ...parte, photo: imageData['image_url'] };
             setParte(updatedParte);

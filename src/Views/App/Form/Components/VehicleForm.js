@@ -71,6 +71,7 @@ const VehicleForm = () => {
     }
 
     const fetchAseguradora = async () => {
+        // setLoaded(false)
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
         axios.get(`${ENDPOINT_poliza}/getByVehiculoID.php`, {
@@ -100,12 +101,13 @@ const VehicleForm = () => {
         setVehicleSec(itemSelect)
         const updatedParte = { ...parte, vehiculo: value };
         setParte(updatedParte);
+        // setLoaded(false)
         fetchAseguradora();
+        
     }
 
     const handleSiguiente = async () => {
         await setParteOnAsyncStorage(StorageKeys.PARTE, JSON.stringify(parte));
-        // console.log(parte);
         navigation.navigate('User2Form');
     };
 
@@ -114,7 +116,6 @@ const VehicleForm = () => {
     };
     return (
         <View>
-
             <Text style={{ fontSize: 40, marginLeft: '4%' }}>Vehiculo A</Text>
             <ScrollView style={styles.container}>
                 <DropDownPicker
@@ -129,20 +130,25 @@ const VehicleForm = () => {
                     setItems={setVehicles}
                     onChangeValue={handleDropDown}
                     style={{ marginLeft: '4%', marginTop: '4%', width: '90%' }}
-                    dropDownContainerStyle={{ marginLeft: '4%', marginTop: '4%', width: '89.5%' }}
+                    dropDownContainerStyle={{ marginLeft: '4%', marginTop: '4%', width: '89.5%', maxHeight: '50%' }}
                 />
-                {vehicleSec  && poliza &&
-                <View>
-                    <View >
-                        <TextCustom label={'Matricula'} id={'matricula'} value={vehicleSec.label} readOnly={true} />
-                        <TextCustom label={'Marca'} id={'marca'} value={vehicleSec.options.marca} readOnly={true} />
-                        <TextCustom label={'Modelo'} id={'modelo'} value={vehicleSec.options.modelo} readOnly={true} />
+                {!vehicleSec && !poliza &&
+                    <View style={styles.color}>
+                        {/* <Loader/> */}
                     </View>
+                }
+                {vehicleSec && poliza &&
                     <View>
-                        <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} value={poliza.aseguradora_id[1]} readOnly={true} />
-                        <TextCustom label={'Numero de poliza'} id={'name'} value={poliza.name} readOnly={true} />
+                        <View >
+                            <TextCustom label={'Matricula'} id={'matricula'} value={vehicleSec.label} readOnly={true} />
+                            <TextCustom label={'Marca'} id={'marca'} value={vehicleSec.options.marca} readOnly={true} />
+                            <TextCustom label={'Modelo'} id={'modelo'} value={vehicleSec.options.modelo} readOnly={true} />
+                        </View>
+                        <View>
+                            <TextCustom label={'Nombre de la Aseguradora'} id={'aseguradora_id'} value={poliza.aseguradora_id[1]} readOnly={true} />
+                            <TextCustom label={'Numero de poliza'} id={'name'} value={poliza.name} readOnly={true} />
+                        </View>
                     </View>
-                </View>
                 }
             </ScrollView>
             <View style={styles.buttonContainer}>
@@ -162,7 +168,8 @@ const styles = StyleSheet.create({
     container: {
         maxHeight: '79%',
         minHeight: '79%',
-        marginBottom:'4%'
+        marginBottom: '4%',
+        // backgroundColor:'red'
     },
     buttonContainer: {
         flexDirection: 'row',
@@ -175,6 +182,10 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: '#9a89c0',
     },
+    color: {
+        // backgroundColor: 'red',
+        height: 125
+    }
 });
 
 export default VehicleForm;

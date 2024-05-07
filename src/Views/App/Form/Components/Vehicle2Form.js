@@ -18,6 +18,7 @@ import Vehicle2FormNoClientNotNew from './Vehicle2FormNoClientNotNew';
 
 const Vehicle2Form = () => {
 
+    const navigation = useNavigation()
     const route = useRoute()
     const { client2 } = route.params;
     const { userSec } = route.params;
@@ -25,14 +26,56 @@ const Vehicle2Form = () => {
 
     const [loaded, setLoaded] = useState(true);
 
+    const save = async () => {
+        let updatedParte = ({});
+        if (vehicleSec === undefined) {
+            updatedParte = { ...parte, vehiculo2: vehicle2, poliza_ids: poliza_ids };
+        } else {
+            updatedParte = { ...parte, vehiculo2: vehicleSec.value, poliza_ids: poliza_ids };
+        }
+        await AsyncStorage.setItem(StorageKeys.PARTE, JSON.stringify(updatedParte));
+        setParte(updatedParte);
+        const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
+        const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
+        axios.post(`${ENDPOINT_partes}/save.php`, {
+            dni,
+            token,
+            ...updatedParte,
+        })
+            .then(res => {
+                const parteData = res.data
+                // console.log(parteData);
+                if (parteData.status) {
+                    Alert.alert('Parte Enviado', 'El parte se ha enviado correctamente', [
+                        {
+                            text: 'Aceptar',
+                            onPress: () => navigation.navigate("Mis Partes"),
+                            style: 'cancel',
+                        },
+                    ]);
+                } else {
+                    Alert.alert('Error', parteData.message, [
+                        {
+                            text: 'Cancelar',
+                            style: 'cancel',
+                        },
+                    ]);
+                }
+            })
+            .catch(error => {
+                console.error("error al crear parte", error);
+            }).finally(() => setLoaded(true))
+    };
 
-    console.log(flag);
+    const handleGoBack = () => {
+        navigation.navigate("User2Form");
+    };
 
     if (!loaded) return <Loader />
 
 
     return (
-        <View>
+        <View style={{height:'100%'}}>
             {+flag === 2 &&
                 <Vehicle2FormClient />
             }
@@ -47,6 +90,19 @@ const Vehicle2Form = () => {
 
 }
 
-
-
 export default Vehicle2Form
+const styles = StyleSheet.create({
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        height:'10%'
+    },
+    button: {
+        padding: '4%',
+    },
+    textButton: {
+        textAlign: 'center',
+        color: '#9a89c0',
+        marginBottom:'6%'
+    },
+});
