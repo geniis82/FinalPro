@@ -17,7 +17,7 @@ const Vehicle2FormClient = () => {
     const route = useRoute();
     const { userSec } = route.params;
 
-    const navigation = useNavigation()
+    const {navigate} = useNavigation()
 
     const [loaded, setLoaded] = useState(false);
 
@@ -65,7 +65,7 @@ const Vehicle2FormClient = () => {
                     Alert.alert('Parte Eniado', 'El parte se ha enviado correctamente', [
                         {
                             text: 'Aceptar',
-                            onPress: () => navigation.navigate("Mis Partes"),
+                            onPress: () => navigate("ListaPartes"),
                             style: 'cancel',
                         },
                     ])

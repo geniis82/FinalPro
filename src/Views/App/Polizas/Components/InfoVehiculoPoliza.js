@@ -8,16 +8,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StorageKeys } from '../../../../../utils/StorageKeys';
 import axios from 'axios';
 import Loader from '../../../../Components/Loader';
+import { useRoute } from '@react-navigation/native';
 
-import { useFocusEffect } from "@react-navigation/native";
 
 
-const InfoVehiculoPoliza = ({ poliza, handleOnchange }) => {
+const InfoVehiculoPoliza = ({ poliza }) => {
 
     const [vehicle, setVehicle] = useState({})
-    const [loaded, setLoaded] = useState(false);
-
-
+    const [loaded, setLoaded] = useState(false)
+    
+    
     useEffect(() => {
         fetchPoliza();
     }, [poliza])
@@ -25,7 +25,6 @@ const InfoVehiculoPoliza = ({ poliza, handleOnchange }) => {
     const fetchPoliza = async () => {
         const dni = await AsyncStorage.getItem(StorageKeys.USER_DNI)
         const token = await AsyncStorage.getItem(StorageKeys.USER_TOKEN)
-
         axios.get(`${ENDPOINT_vehicles}/getVehicleById.php`, {
             params: {
                 dni,
@@ -36,7 +35,6 @@ const InfoVehiculoPoliza = ({ poliza, handleOnchange }) => {
             .then(res => {
                 const infoVehi = res.data
                 if (infoVehi.status) {
-                    // console.log(infoVehi.vehicles);
                     setVehicle(infoVehi.vehicles)
                 } else {
                     console.log("no se pudo obtener los datos del usuario");
@@ -44,16 +42,16 @@ const InfoVehiculoPoliza = ({ poliza, handleOnchange }) => {
             })
             .catch(error => {
                 console.error("Error al obtener los datos del user", error);
-            }).finally(() => setLoaded(true))
+            }).finally(()=>setLoaded(true))
     }
 
     if (!loaded) return <Loader />
 
     return (
         <View>
-            <TextCustom label={'Matricula'} id={'label'} value={vehicle.label} onChange={handleOnchange} readOnly={true} />
-            <TextCustom label={'Marca'} id={'marca'} value={vehicle.options.marca} onChange={handleOnchange} readOnly={true} />
-            <TextCustom label={'Modelo'} id={'modelo'} value={vehicle.options.modelo} onChange={handleOnchange} readOnly={true} />
+            <TextCustom label={'Matricula'} id={'label'} value={vehicle.label}  readOnly={true} />
+            <TextCustom label={'Marca'} id={'marca'} value={vehicle.options.marca}  readOnly={true} />
+            <TextCustom label={'Modelo'} id={'modelo'} value={vehicle.options.modelo}  readOnly={true} />
         </View>
     )
 

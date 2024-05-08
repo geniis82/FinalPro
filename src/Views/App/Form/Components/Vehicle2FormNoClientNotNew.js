@@ -33,7 +33,7 @@ const Vehicle2FormNoClientNotNew = () => {
     const [imgName, setImgName] = useState("")
     const [poliza_ids, setPoliza_ids] = useState({})
 
-    const navigation = useNavigation()
+    const {navigate} = useNavigation()
 
     useFocusEffect(
         useCallback(() => {
@@ -90,7 +90,7 @@ const Vehicle2FormNoClientNotNew = () => {
                     Alert.alert('Parte Enviado', 'El parte se ha enviado correctamente', [
                         {
                             text: 'Aceptar',
-                            onPress: () => navigation.navigate("Mis Partes"),
+                            onPress: () => navigate("ListaPartes"),
                             style: 'cancel',
                         },
                     ]);

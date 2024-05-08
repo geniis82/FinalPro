@@ -7,6 +7,7 @@ import { ENDPOINT_poliza } from '../../../../utils/endpoints'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { Paths } from '../../../../utils/paths';
 import moment from 'moment';
+import Loader from '../../../Components/Loader';
 
 const ListaPoliza = () => {
     const [polizas, setPolizas] = useState([]);
@@ -73,7 +74,7 @@ const ListaPoliza = () => {
         );
     }
 
-    if (!loaded) return null;
+    if (!loaded) return <Loader/>;
 
     if (polizas.length === 0) {
         return (
